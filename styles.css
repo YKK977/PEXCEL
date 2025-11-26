@@ -1,0 +1,167 @@
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  background: #f5f5f5;
+}
+
+/* 헤더 영역 */
+header {
+  padding: 16px 24px;
+  background: #ffffff;
+  border-bottom: 1px solid #ddd;
+  display: flex;
+  align-items: flex-end;
+  gap: 32px;          /* 제목과 드롭다운 사이 간격 */
+}
+
+.title-area {
+  display: flex;
+  align-items: flex-end; /* 하단 정렬 */
+  gap: 8px;
+  line-height: 1;
+}
+
+.title-main {
+  font-size: 32px;
+  font-weight: 800;
+  letter-spacing: 1px;
+}
+
+.title-sub {
+  font-size: 12px;
+  color: #666;
+  margin-bottom: 2px; /* 살짝 내려서 하단 맞춤 느낌 */
+}
+
+#mode-selector {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 14px;
+}
+
+#mode-selector label {
+  font-weight: 500;
+}
+
+#mode-selector select {
+  padding: 4px 8px;
+  font-size: 14px;
+}
+
+/* 메인 영역: 가운데 배치 */
+main {
+  display: flex;
+  justify-content: center;   /* 시트 컨테이너를 가운데로 */
+  padding: 16px;
+}
+
+/* 각 시트 컨테이너: 최대 너비 제한, 중앙 정렬 */
+#sheet-container,
+#sheet-container-static,
+#sheet-container-vessel {
+  flex: 0 1 auto;
+  max-width: 600px;          /* 열이 너무 넓어지지 않도록 제한 */
+  width: 100%;
+  background: #ffffff;
+  border-radius: 8px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+/* 블록 카드 */
+.block {
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 12px 16px 16px;
+  background: #fcfcfc;
+}
+
+.block-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.block-header h2 {
+  margin: 0;
+  font-size: 16px;
+}
+
+.block-header .btn-copy {
+  padding: 6px 12px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  background: #fafafa;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+.block-header .btn-copy:hover {
+  background: #eee;
+}
+
+/* 테이블: 가로폭 제한 상태에서 열 균등 분배 */
+.calc-table {
+  border-collapse: collapse;
+  width: 100%;
+  table-layout: fixed;   /* 열 균등 폭 */
+}
+
+.calc-table colgroup col {
+  width: auto;
+}
+
+.calc-table th,
+.calc-table td {
+  border: 1px solid #ccc;
+  padding: 8px 12px;
+  text-align: center;
+  font-size: 14px;
+  word-wrap: break-word;
+}
+
+.calc-table .title {
+  font-size: 18px;
+  color: #0044ff;
+  font-weight: bold;
+}
+
+.calc-table .unit {
+  font-size: 11px;
+  color: #555;
+}
+
+.calc-table input[type="number"],
+.calc-table select {
+  width: 100%;
+  border: none;
+  background: #fffacd;
+  text-align: center;
+  padding: 4px 6px;
+  font-size: 14px;
+  color: #d00000;
+  font-weight: bold;
+}
+
+.calc-table input[type="number"]:focus,
+.calc-table select:focus {
+  outline: 1px solid #888;
+}
+
+.calc-table .result {
+  background: #f0f0f0;
+  color: #0044ff;
+  font-weight: bold;
+}
+
+.calc-table .formula {
+  font-size: 12px;
+  text-align: left;
+  background: #fafafa;
+}

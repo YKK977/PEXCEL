@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <title>PEXCEL</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header>
+    <div class="title-area">
+      <div class="title-main">PEXCEL</div>
+      <div class="title-sub">펙셀</div>
+    </div>
+    <div id="mode-selector">
+      <label for="calc-mode">Calculator:</label>
+      <select id="calc-mode">
+        <option value="mass-volume" selected>Mass and Volume Flowrate Calculation</option>
+        <option value="static-head">Static Head Calculation</option>
+        <option value="vessel-volume">Vessel Volume Calculation</option>
+      </select>
+    </div>
+  </header>
+
+  <main>
+    <!-- Section 1: Mass & Volume Flowrate (기본 표시) -->
+    <section id="section-mass-volume">
+      <section id="sheet-container">
+        <!-- 블록 1: Mass → Volume -->
+        <div class="block" id="block-1">
+          <div class="block-header">
+            <h2>Mass ▶ Volume Flowrate</h2>
+            <button class="btn-copy" data-block="1">엑셀로 복사(수식 포함)</button>
+          </div>
+          <table class="calc-table">
+            <colgroup>
+              <col />
+              <col />
+              <col />
+            </colgroup>
+            <tr>
+              <th colspan="3" class="title">Mass Flowrate</th>
+            </tr>
+            <tr>
+              <th>Mass Flowrate<br><span class="unit">kg/h</span></th>
+              <th>MW<br><span class="unit">kg/kmol</span></th>
+              <th>Volume Flowrate<br><span class="unit">Nm³/h</span></th>
+            </tr>
+            <tr>
+              <td><input type="number" id="mass1" value="203.0" step="0.1" /></td>
+              <td><input type="number" id="mw1" value="29.0" step="0.1" /></td>
+              <td class="result"><span id="vol1">157</span></td>
+            </tr>
+            <tr>
+              <td colspan="3" class="formula">
+                Volume Flowrate = Mass Flowrate × 22.414 ÷ MW
+              </td>
+            </tr>
+          </table>
+        </div>
+
+        <!-- 블록 2: Volume → Mass -->
+        <div class="block" id="block-2">
+          <div class="block-header">
+            <h2>Volume ▶ Mass Flowrate</h2>
+            <button class="btn-copy" data-block="2">엑셀로 복사(수식 포함)</button>
+          </div>
+          <table class="calc-table">
+            <colgroup>
+              <col />
+              <col />
+              <col />
+            </colgroup>
+            <tr>
+              <th colspan="3" class="title">Volume Flowrate</th>
+            </tr>
+            <tr>
+              <th>Volume Flowrate<br><span class="unit">Nm³/h</span></th>
+              <th>MW<br><span class="unit">kg/kmol</span></th>
+              <th>Mass Flowrate<br><span class="unit">kg/h</span></th>
+            </tr>
+            <tr>
+              <td><input type="number" id="vol2_in" value="157.0" step="0.1" /></td>
+              <td><input type="number" id="mw2" value="29.0" step="0.1" /></td>
+              <td class="result"><span id="mass2">203</span></td>
+            </tr>
+            <tr>
+              <td colspan="3" class="formula">
+                Mass Flowrate = Volume Flowrate × MW ÷ 22.414
+              </td>
+            </tr>
+          </table>
+        </div>
+      </section>
+    </section>
+
+    <!-- Section 2: Static Head Calculation (초기 숨김) -->
+    <section id="section-static-head" style="display:none;">
+      <section id="sheet-container-static">
+        <!-- 블록 3: kg/cm2 ▶ m -->
+        <div class="block" id="block-3">
+          <div class="block-header">
+            <h2>kg/cm² ▶ m (Static Head)</h2>
+            <button class="btn-copy" data-block="3">엑셀로 복사(수식 포함)</button>
+          </div>
+          <table class="calc-table">
+            <colgroup>
+              <col />
+              <col />
+              <col />
+            </colgroup>
+            <tr>
+              <th colspan="3" class="title">kg/cm² ▶ m</th>
+            </tr>
+            <tr>
+              <th>D. Pressure<br><span class="unit">kg/cm²</span></th>
+              <th>S.G<br><span class="unit">-</span></th>
+              <th>Head<br><span class="unit">m</span></th>
+            </tr>
+            <tr>
+              <td><input type="number" id="p_kgcm2" value="1.2" step="0.1" /></td>
+              <td><input type="number" id="sg1" value="0.5" step="0.01" /></td>
+              <td class="result"><span id="head_m">24.0</span></td>
+            </tr>
+            <tr>
+              <td colspan="3" class="formula">
+                Head (m) = D. Pressure (kg/cm²) × 10 ÷ S.G
+              </td>
+            </tr>
+          </table>
+        </div>
+
+        <!-- 블록 4: m ▶ kg/cm2 -->
+        <div class="block" id="block-4">
+          <div class="block-header">
+            <h2>m ▶ kg/cm² (Static Head)</h2>
+            <button class="btn-copy" data-block="4">엑셀로 복사(수식 포함)</button>
+          </div>
+          <table class="calc-table">
+            <colgroup>
+              <col />
+              <col />
+              <col />
+            </colgroup>
+            <tr>
+              <th colspan="3" class="title">m ▶ kg/cm²</th>
+            </tr>
+            <tr>
+              <th>Head<br><span class="unit">m</span></th>
+              <th>S.G<br><span class="unit">-</span></th>
+              <th>D. Pressure<br><span class="unit">kg/cm²</span></th>
+            </tr>
+            <tr>
+              <td><input type="number" id="head_m_in" value="24.0" step="0.1" /></td>
+              <td><input type="number" id="sg2" value="0.5" step="0.01" /></td>
+              <td class="result"><span id="p_kgcm2_out">1.2</span></td>
+            </tr>
+            <tr>
+              <td colspan="3" class="formula">
+                D. Pressure (kg/cm²) = Head (m) × S.G ÷ 10
+              </td>
+            </tr>
+          </table>
+        </div>
+      </section>
+    </section>
+
+    <!-- Section 3: Vessel Volume Calculation (초기 숨김) -->
+    <section id="section-vessel-volume" style="display:none;">
+      <section id="sheet-container-vessel">
+        <!-- Vertical Vessel -->
+        <div class="block" id="block-5">
+          <div class="block-header">
+            <h2>VERTICAL Vessel Volume (to Liquid Level)</h2>
+            <button class="btn-copy" data-block="5">엑셀로 복사(수식 포함)</button>
+          </div>
+          <table class="calc-table">
+            <colgroup>
+              <col />
+              <col />
+              <col />
+              <col />
+              <col />
+            </colgroup>
+            <tr>
+              <th colspan="5" class="title">VERTICAL</th>
+            </tr>
+            <tr>
+              <th>Head Type</th>
+              <th>Diameter<br><span class="unit">mm</span></th>
+              <th>Length<br><span class="unit">mm</span></th>
+              <th>Liquid Level<br><span class="unit">mm</span></th>
+              <th>Volume<br><span class="unit">m³</span></th>
+            </tr>
+            <tr>
+              <td>
+                <select id="v_head_type">
+                  <option value="2:1E">2:1E</option>
+                  <option value="HS">HS</option>
+                  <option value="FLAT">FLAT</option>
+                </select>
+              </td>
+              <td><input type="number" id="v_diam" value="1300" step="1" /></td>
+              <td><input type="number" id="v_length" value="1020" step="1" /></td>
+              <td><input type="number" id="v_level" value="1020" step="1" /></td>
+              <td class="result"><span id="v_volume">1.6</span></td>
+            </tr>
+            <tr>
+              <td colspan="5" class="formula">
+                제공된 Vertical Excel 수식(2:1E / HS / FLAT)을 그대로 사용하여 Volume(m³)을 계산합니다.
+              </td>
+            </tr>
+          </table>
+        </div>
+
+        <!-- Horizontal Vessel -->
+        <div class="block" id="block-6">
+          <div class="block-header">
+            <h2>HORIZONTAL Vessel Volume (to Liquid Level)</h2>
+            <button class="btn-copy" data-block="6">엑셀로 복사(수식 포함)</button>
+          </div>
+          <table class="calc-table">
+            <colgroup>
+              <col />
+              <col />
+              <col />
+              <col />
+              <col />
+            </colgroup>
+            <tr>
+              <th colspan="5" class="title">HORIZONTAL</th>
+            </tr>
+            <tr>
+              <th>Type<br><span class="unit">2:1E / HS</span></th>
+              <th>Diameter<br><span class="unit">mm</span></th>
+              <th>Length<br><span class="unit">mm</span></th>
+              <th>Liquid Level<br><span class="unit">mm</span></th>
+              <th>Volume<br><span class="unit">m³</span></th>
+            </tr>
+            <tr>
+              <td>
+                <select id="h_head_type">
+                  <option value="2:1E">2:1E</option>
+                  <option value="HS">HS</option>
+                </select>
+              </td>
+              <td><input type="number" id="h_diam" value="1550" step="1" /></td>
+              <td><input type="number" id="h_length" value="4000" step="1" /></td>
+              <td><input type="number" id="h_level" value="1550" step="1" /></td>
+              <td class="result"><span id="h_volume">8.5</span></td>
+            </tr>
+            <tr>
+              <td colspan="5" class="formula">
+                제공된 Horizontal Excel 수식을 그대로 활용하여 Level 기준 Volume(m³)을 계산합니다.
+              </td>
+            </tr>
+          </table>
+        </div>
+      </section>
+    </section>
+  </main>
+
+  <script src="main.js"></script>
+</body>
+</html>
