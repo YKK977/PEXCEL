@@ -204,6 +204,7 @@ function getBlock5Tsv() {
   const diam  = document.getElementById('v_diam').value || '';
   const len   = document.getElementById('v_length').value || '';
   const level = document.getElementById('v_level').value || '';
+
   const header = [
     'Head Type',
     'Diameter (mm)',
@@ -211,7 +212,17 @@ function getBlock5Tsv() {
     'Liquid Level (mm)',
     'Volume (m3)'
   ].join('\t');
-  const formula = '=IF(A2="2:1E",((2/3)/2*PI()*(B2/2/1000)^3+PI()*((B2/1000)^2)/4*(D2/1000)),IF(A2="HS",(PI()/12*(B2/1000)^3)+PI()*((B2/1000)^2)/4*(D2/1000),PI()*((B2/1000)^2)/4*(D2/1000)))';
+
+  let formula = '';
+  if (type === "2:1E") {
+    formula = '=((2/3)/2*PI()*(B2/2/1000)^3+PI()*((B2/1000)^2)/4*(D2/1000))';
+  } else if (type === "HS") {
+    formula = '=(PI()/12*(B2/1000)^3)+PI()*((B2/1000)^2)/4*(D2/1000)';
+  } else {
+    // FLAT or 기타
+    formula = '=PI()*((B2/1000)^2)/4*(D2/1000)';
+  }
+
   const row = [
     type,
     diam,
@@ -219,14 +230,17 @@ function getBlock5Tsv() {
     level,
     formula
   ].join('\t');
+
   return header + '\n' + row;
 }
+
 
 function getBlock6Tsv() {
   const type  = document.getElementById('h_head_type').value || '';
   const diam  = document.getElementById('h_diam').value || '';
   const len   = document.getElementById('h_length').value || '';
   const level = document.getElementById('h_level').value || '';
+
   const header = [
     'Type',
     'Diameter (mm)',
@@ -234,7 +248,15 @@ function getBlock6Tsv() {
     'Liquid Level (mm)',
     'Volume (m3)'
   ].join('\t');
-  const formula = '=IF(A2="2:1E",(((PI()/4/2*B2*D2^2*(1-2*D2/(3*B2)))/10^9)*2+((PI()/8+0.5^2*((ACOS(1-2*(D2/B2))-ACOS(0))-0.5*(SIN(2*ACOS(1-2*(D2/B2)))-SIN(2*ACOS(0)))))/(PI()/4))*(PI()/4*B2*B2*C2/10^9)),(2*PI()/24*(D2^2)*(3*B2-2*D2)*2)/10^9+((PI()/8+0.5^2*((ACOS(1-2*(D2/B2))-ACOS(0))-0.5*(SIN(2*ACOS(1-2*(D2/B2)))-SIN(2*ACOS(0)))))/(PI()/4))*(PI()/4*B2*B2*C2/10^9))';
+
+  let formula = '';
+  if (type === "2:1E") {
+    formula = '=((PI()/4/2*B2*D2^2*(1-2*D2/(3*B2)))/10^9)*2+((PI()/8+0.5^2*((ACOS(1-2*(D2/B2))-ACOS(0))-0.5*(SIN(2*ACOS(1-2*(D2/B2)))-SIN(2*ACOS(0)))))/(PI()/4))*(PI()/4*B2*B2*C2/10^9)';
+  } else {
+    // HS
+    formula = '=(2*PI()/24*(D2^2)*(3*B2-2*D2)*2)/10^9+((PI()/8+0.5^2*((ACOS(1-2*(D2/B2))-ACOS(0))-0.5*(SIN(2*ACOS(1-2*(D2/B2)))-SIN(2*ACOS(0)))))/(PI()/4))*(PI()/4*B2*B2*C2/10^9)';
+  }
+
   const row = [
     type,
     diam,
@@ -242,8 +264,11 @@ function getBlock6Tsv() {
     level,
     formula
   ].join('\t');
+
   return header + '\n' + row;
 }
+
+
 
 // --- 초기화 / 이벤트 ---
 window.addEventListener('DOMContentLoaded', function () {
