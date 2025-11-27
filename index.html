@@ -17,19 +17,21 @@
         <option value="mass-volume" selected>Mass and Volume Flowrate Calculation</option>
         <option value="static-head">Static Head Calculation</option>
         <option value="vessel-volume">Vessel Volume Calculation</option>
+        <option value="combined-gas">Combined Gas Law</option>
+        <option value="gas-density">Gas Density Calculation</option>
       </select>
     </div>
   </header>
 
   <main>
-    <!-- Section 1: Mass & Volume Flowrate (기본 표시) -->
+    <!-- Section 1: Mass & Volume Flowrate (default) -->
     <section id="section-mass-volume">
       <section id="sheet-container">
-        <!-- 블록 1: Mass → Volume -->
+        <!-- Block 1: Mass → Volume -->
         <div class="block" id="block-1">
           <div class="block-header">
             <h2>Mass ▶ Volume Flowrate</h2>
-            <button class="btn-copy" data-block="1">엑셀로 복사(수식 포함)</button>
+            <button class="btn-copy" data-block="1">Copy to Excel (with formulas)</button>
           </div>
           <table class="calc-table">
             <colgroup>
@@ -58,11 +60,11 @@
           </table>
         </div>
 
-        <!-- 블록 2: Volume → Mass -->
+        <!-- Block 2: Volume → Mass -->
         <div class="block" id="block-2">
           <div class="block-header">
             <h2>Volume ▶ Mass Flowrate</h2>
-            <button class="btn-copy" data-block="2">엑셀로 복사(수식 포함)</button>
+            <button class="btn-copy" data-block="2">Copy to Excel (with formulas)</button>
           </div>
           <table class="calc-table">
             <colgroup>
@@ -93,14 +95,14 @@
       </section>
     </section>
 
-    <!-- Section 2: Static Head Calculation (초기 숨김) -->
+    <!-- Section 2: Static Head Calculation (initially hidden) -->
     <section id="section-static-head" style="display:none;">
       <section id="sheet-container-static">
-        <!-- 블록 3: kg/cm2 ▶ m -->
+        <!-- Block 3: kg/cm2 ▶ m -->
         <div class="block" id="block-3">
           <div class="block-header">
             <h2>kg/cm² ▶ m (Static Head)</h2>
-            <button class="btn-copy" data-block="3">엑셀로 복사(수식 포함)</button>
+            <button class="btn-copy" data-block="3">Copy to Excel (with formulas)</button>
           </div>
           <table class="calc-table">
             <colgroup>
@@ -129,11 +131,11 @@
           </table>
         </div>
 
-        <!-- 블록 4: m ▶ kg/cm2 -->
+        <!-- Block 4: m ▶ kg/cm2 -->
         <div class="block" id="block-4">
           <div class="block-header">
             <h2>m ▶ kg/cm² (Static Head)</h2>
-            <button class="btn-copy" data-block="4">엑셀로 복사(수식 포함)</button>
+            <button class="btn-copy" data-block="4">Copy to Excel (with formulas)</button>
           </div>
           <table class="calc-table">
             <colgroup>
@@ -164,14 +166,14 @@
       </section>
     </section>
 
-    <!-- Section 3: Vessel Volume Calculation (초기 숨김) -->
+    <!-- Section 3: Vessel Volume Calculation (initially hidden) -->
     <section id="section-vessel-volume" style="display:none;">
       <section id="sheet-container-vessel">
         <!-- Vertical Vessel -->
         <div class="block" id="block-5">
           <div class="block-header">
             <h2>VERTICAL Vessel Volume (to Liquid Level)</h2>
-            <button class="btn-copy" data-block="5">엑셀로 복사(수식 포함)</button>
+            <button class="btn-copy" data-block="5">Copy to Excel (with formulas)</button>
           </div>
           <table class="calc-table">
             <colgroup>
@@ -206,7 +208,7 @@
             </tr>
             <tr>
               <td colspan="5" class="formula">
-                제공된 Vertical Excel 수식(2:1E / HS / FLAT)을 그대로 사용하여 Volume(m³)을 계산합니다.
+                Provided Vertical Excel formulas (2:1E / HS / FLAT) are used as-is to calculate Volume (m³).
               </td>
             </tr>
           </table>
@@ -216,7 +218,7 @@
         <div class="block" id="block-6">
           <div class="block-header">
             <h2>HORIZONTAL Vessel Volume (to Liquid Level)</h2>
-            <button class="btn-copy" data-block="6">엑셀로 복사(수식 포함)</button>
+            <button class="btn-copy" data-block="6">Copy to Excel (with formulas)</button>
           </div>
           <table class="calc-table">
             <colgroup>
@@ -250,13 +252,159 @@
             </tr>
             <tr>
               <td colspan="5" class="formula">
-                제공된 Horizontal Excel 수식을 그대로 활용하여 Level 기준 Volume(m³)을 계산합니다.
+                Provided Horizontal Excel formulas are used as-is to calculate Volume (m³) at the given Level.
               </td>
             </tr>
           </table>
         </div>
       </section>
     </section>
+
+    <!-- Section 4: Combined Gas Law -->
+    <section id="section-combined-gas" style="display:none;">
+      <section id="sheet-container-combined">
+        <!-- Combined Gas Law - V2 -->
+        <div class="block" id="block-7">
+          <div class="block-header">
+            <h2>Combined Gas Law - Volume V2</h2>
+            <button class="btn-copy" data-block="7">Copy to Excel (with formulas)</button>
+          </div>
+          <table class="calc-table">
+            <colgroup>
+              <col /><col /><col /><col /><col /><col /><col />
+            </colgroup>
+            <tr>
+              <th>Constant</th>
+              <th colspan="3">Initial Condition</th>
+              <th colspan="3">Final Condition</th>
+            </tr>
+            <tr>
+              <th>1 ATM<br><span class="unit">kg/cm²g</span></th>
+              <th>P1<br><span class="unit">kg/cm²g</span></th>
+              <th>T1<br><span class="unit">°C</span></th>
+              <th>V1<br><span class="unit">m³</span></th>
+              <th>P2<br><span class="unit">kg/cm²g</span></th>
+              <th>T2<br><span class="unit">°C</span></th>
+              <th>V2<br><span class="unit">m³</span></th>
+            </tr>
+            <tr>
+              <td><input type="number" id="atm_v2" class="const-input" value="1.03323" step="0.00001" /></td>
+              <td><input type="number" id="p1_v2" value="12.0" step="0.1" /></td>
+              <td><input type="number" id="t1_v2" value="80.0" step="0.1" /></td>
+              <td><input type="number" id="v1_v2" value="12000" step="1" /></td>
+              <td><input type="number" id="p2_v2" value="0.0" step="0.1" /></td>
+              <td><input type="number" id="t2_v2" value="0.0" step="0.1" /></td>
+              <td class="result"><span id="v2_out">0.0</span></td>
+            </tr>
+          </table>
+        </div>
+
+        <!-- Combined Gas Law - P2 -->
+        <div class="block" id="block-8">
+          <div class="block-header">
+            <h2>Combined Gas Law - Pressure P2</h2>
+            <button class="btn-copy" data-block="8">Copy to Excel (with formulas)</button>
+          </div>
+          <table class="calc-table">
+            <colgroup>
+              <col /><col /><col /><col /><col /><col /><col />
+            </colgroup>
+            <tr>
+              <th>Constant</th>
+              <th colspan="3">Initial Condition</th>
+              <th colspan="3">Final Condition</th>
+            </tr>
+            <tr>
+              <th>1 ATM<br><span class="unit">kg/cm²g</span></th>
+              <th>P1<br><span class="unit">kg/cm²g</span></th>
+              <th>T1<br><span class="unit">°C</span></th>
+              <th>V1<br><span class="unit">m³</span></th>
+              <th>P2<br><span class="unit">kg/cm²g</span></th>
+              <th>T2<br><span class="unit">°C</span></th>
+              <th>V2<br><span class="unit">m³</span></th>
+            </tr>
+            <tr>
+              <td><input type="number" id="atm_p2" class="const-input" value="1.03323" step="0.00001" /></td>
+              <td><input type="number" id="p1_p2" value="12.0" step="0.1" /></td>
+              <td><input type="number" id="t1_p2" value="80.0" step="0.1" /></td>
+              <td><input type="number" id="v1_p2" value="12000" step="1" /></td>
+              <td class="result"><span id="p2_out">0.0</span></td>
+              <td><input type="number" id="t2_p2" value="0.0" step="0.1" /></td>
+              <td><input type="number" id="v2_p2" value="117079" step="1" /></td>
+            </tr>
+          </table>
+        </div>
+
+        <!-- Combined Gas Law - T2 -->
+        <div class="block" id="block-9">
+          <div class="block-header">
+            <h2>Combined Gas Law - Temperature T2</h2>
+            <button class="btn-copy" data-block="9">Copy to Excel (with formulas)</button>
+          </div>
+          <table class="calc-table">
+            <colgroup>
+              <col /><col /><col /><col /><col /><col /><col />
+            </colgroup>
+            <tr>
+              <th>Constant</th>
+              <th colspan="3">Initial Condition</th>
+              <th colspan="3">Final Condition</th>
+            </tr>
+            <tr>
+              <th>1 ATM<br><span class="unit">kg/cm²g</span></th>
+              <th>P1<br><span class="unit">kg/cm²g</span></th>
+              <th>T1<br><span class="unit">°C</span></th>
+              <th>V1<br><span class="unit">m³</span></th>
+              <th>P2<br><span class="unit">kg/cm²g</span></th>
+              <th>T2<br><span class="unit">°C</span></th>
+              <th>V2<br><span class="unit">m³</span></th>
+            </tr>
+            <tr>
+              <td><input type="number" id="atm_t2" class="const-input" value="1.03323" step="0.00001" /></td>
+              <td><input type="number" id="p1_t2" value="12.0" step="0.1" /></td>
+              <td><input type="number" id="t1_t2" value="80.0" step="0.1" /></td>
+              <td><input type="number" id="v1_t2" value="12000" step="1" /></td>
+              <td><input type="number" id="p2_t2" value="0.0" step="0.1" /></td>
+              <td class="result"><span id="t2_out">0.0</span></td>
+              <td><input type="number" id="v2_t2" value="117079" step="1" /></td>
+            </tr>
+          </table>
+        </div>
+      </section>
+    </section>
+
+
+    <!-- Section 5: Gas Density Calculation -->
+    <section id="section-gas-density" style="display:none;">
+      <section id="sheet-container-gasdensity">
+        <div class="block" id="block-10">
+          <div class="block-header">
+            <h2>Gas Density Calculation</h2>
+            <button class="btn-copy" data-block="10">Copy to Excel (with formulas)</button>
+          </div>
+          <table class="calc-table">
+            <colgroup>
+              <col /><col /><col /><col /><col />
+            </colgroup>
+            <tr>
+              <th>MW<br><span class="unit">-</span></th>
+              <th>Comp. Factor (Z)<br><span class="unit">-</span></th>
+              <th>Pressure<br><span class="unit">kg/cm²g</span></th>
+              <th>Temperature<br><span class="unit">°C</span></th>
+              <th>Gas Density<br><span class="unit">kg/m³</span></th>
+            </tr>
+            <tr>
+              <td><input type="number" id="gd_mw" value="20.0" step="0.1" /></td>
+              <td><input type="number" id="gd_z" value="0.9" step="0.01" /></td>
+              <td><input type="number" id="gd_p" value="10.0" step="0.1" /></td>
+              <td><input type="number" id="gd_t" value="40.0" step="0.1" /></td>
+              <td class="result"><span id="gd_rho">9.235</span></td>
+            </tr>
+          </table>
+        </div>
+      </section>
+    </section>
+
   </main>
 
   <script src="main.js"></script>

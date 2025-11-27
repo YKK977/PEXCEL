@@ -165,3 +165,34 @@ main {
   text-align: left;
   background: #fafafa;
 }
+
+#sheet-container-combined {
+  flex: 0 1 auto;
+  max-width: 800px;
+  width: 100%;
+  background: #ffffff;
+  border-radius: 8px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+/* constant input style */
+.calc-table input.const-input {
+  background: #ffffff;
+  color: #000000;
+  font-weight: normal;
+}
+
+#sheet-container-gasdensity {
+  flex: 0 1 auto;
+  max-width: 600px;
+  width: 100%;
+  background: #ffffff;
+  border-radius: 8px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}

@@ -1,4 +1,4 @@
-// main.js - 모든 계산 + 엑셀복사 + 모드 전환까지 한 번에 정리본
+// main.js - All calculations + Excel copy + mode switching in one file
 
 // --- Mass / Volume ---
 function calcBlock1() {
@@ -54,7 +54,7 @@ function calcPressureFromStaticHead() {
   pSpan.textContent = p.toFixed(3);
 }
 
-// --- Vessel: Vertical (주신 Excel 로직 그대로) ---
+// --- Vessel: Vertical (using the provided Excel logic as-is) ---
 function calcVerticalVessel() {
   const headType = document.getElementById('v_head_type').value;
   const diam_mm  = parseFloat(document.getElementById('v_diam').value);
@@ -82,7 +82,7 @@ function calcVerticalVessel() {
   volSpan.textContent = volume.toFixed(3);
 }
 
-// --- Vessel: Horizontal (주신 Excel 수식을 JS로 구현) ---
+// --- Vessel: Horizontal (implementing the provided Excel formulas in JS) ---
 function calcHorizontalVessel() {
   const headType = document.getElementById('h_head_type').value; // "2:1E" / "HS"
   const diam_mm  = parseFloat(document.getElementById('h_diam').value);
@@ -121,20 +121,208 @@ function calcHorizontalVessel() {
   volSpan.textContent = volume.toFixed(3);
 }
 
-// --- 클립보드 공통 ---
+
+// --- Combined Gas Law ---
+// helper
+function cToK(tC) {
+  return tC + 273.15;
+}
+
+// V2
+function calcCombinedV2() {
+  const atm = parseFloat(document.getElementById('atm_v2').value);
+  const p1  = parseFloat(document.getElementById('p1_v2').value);
+  const t1  = parseFloat(document.getElementById('t1_v2').value);
+  const v1  = parseFloat(document.getElementById('v1_v2').value);
+  const p2  = parseFloat(document.getElementById('p2_v2').value);
+  const t2  = parseFloat(document.getElementById('t2_v2').value);
+  const out = document.getElementById('v2_out');
+
+  if (![atm,p1,t1,v1,p2,t2].every(Number.isFinite) || (p2+atm) === 0) {
+    out.textContent = '-';
+    return;
+  }
+  const v2 = ((p1 + atm) * v1 * cToK(t2)) / ((p2 + atm) * cToK(t1));
+  out.textContent = v2.toFixed(3);
+}
+
+// P2
+function calcCombinedP2() {
+  const atm = parseFloat(document.getElementById('atm_p2').value);
+  const p1  = parseFloat(document.getElementById('p1_p2').value);
+  const t1  = parseFloat(document.getElementById('t1_p2').value);
+  const v1  = parseFloat(document.getElementById('v1_p2').value);
+  const t2  = parseFloat(document.getElementById('t2_p2').value);
+  const v2  = parseFloat(document.getElementById('v2_p2').value);
+  const out = document.getElementById('p2_out');
+
+  if (![atm,p1,t1,v1,t2,v2].every(Number.isFinite) || v2 === 0) {
+    out.textContent = '-';
+    return;
+  }
+  const p2_abs = ((p1 + atm) * v1 * cToK(t2)) / (v2 * cToK(t1));
+  const p2_g = p2_abs - atm;
+  out.textContent = p2_g.toFixed(3);
+}
+
+// T2
+function calcCombinedT2() {
+  const atm = parseFloat(document.getElementById('atm_t2').value);
+  const p1  = parseFloat(document.getElementById('p1_t2').value);
+  const t1  = parseFloat(document.getElementById('t1_t2').value);
+  const v1  = parseFloat(document.getElementById('v1_t2').value);
+  const p2  = parseFloat(document.getElementById('p2_t2').value);
+  const v2  = parseFloat(document.getElementById('v2_t2').value);
+  const out = document.getElementById('t2_out');
+
+  if (![atm,p1,t1,v1,p2,v2].every(Number.isFinite) || (p1+atm) === 0) {
+    out.textContent = '-';
+    return;
+  }
+  const t2K = ((p2 + atm) * v2 * cToK(t1)) / ((p1 + atm) * v1);
+  const t2C = t2K - 273.15;
+  out.textContent = t2C.toFixed(3);
+}
+
+// TSV generators for Combined Gas Law
+function getBlock7Tsv() {
+  const atm = document.getElementById('atm_v2').value || '';
+  const p1  = document.getElementById('p1_v2').value || '';
+  const t1  = document.getElementById('t1_v2').value || '';
+  const v1  = document.getElementById('v1_v2').value || '';
+  const p2  = document.getElementById('p2_v2').value || '';
+  const t2  = document.getElementById('t2_v2').value || '';
+  const header = [
+    '1 ATM (kg/cm2g)',
+    'P1 (kg/cm2g)',
+    'T1 (degC)',
+    'V1 (m3)',
+    'P2 (kg/cm2g)',
+    'T2 (degC)',
+    'V2 (m3)'
+  ].join('\t');
+  const row = [
+    atm,
+    p1,
+    t1,
+    v1,
+    p2,
+    t2,
+    '=((B2+A2)*D2*(F2+273.15))/((E2+A2)*(C2+273.15))'
+  ].join('\t');
+  return header + '\n' + row;
+}
+
+function getBlock8Tsv() {
+  const atm = document.getElementById('atm_p2').value || '';
+  const p1  = document.getElementById('p1_p2').value || '';
+  const t1  = document.getElementById('t1_p2').value || '';
+  const v1  = document.getElementById('v1_p2').value || '';
+  const t2  = document.getElementById('t2_p2').value || '';
+  const v2  = document.getElementById('v2_p2').value || '';
+  const header = [
+    '1 ATM (kg/cm2g)',
+    'P1 (kg/cm2g)',
+    'T1 (degC)',
+    'V1 (m3)',
+    'P2 (kg/cm2g)',
+    'T2 (degC)',
+    'V2 (m3)'
+  ].join('\t');
+  const row = [
+    atm,
+    p1,
+    t1,
+    v1,
+    '=((B2+A2)*D2*(F2+273.15))/(G2*(C2+273.15))-A2',
+    t2,
+    v2
+  ].join('\t');
+  return header + '\n' + row;
+}
+
+function getBlock9Tsv() {
+  const atm = document.getElementById('atm_t2').value || '';
+  const p1  = document.getElementById('p1_t2').value || '';
+  const t1  = document.getElementById('t1_t2').value || '';
+  const v1  = document.getElementById('v1_t2').value || '';
+  const p2  = document.getElementById('p2_t2').value || '';
+  const v2  = document.getElementById('v2_t2').value || '';
+  const header = [
+    '1 ATM (kg/cm2g)',
+    'P1 (kg/cm2g)',
+    'T1 (degC)',
+    'V1 (m3)',
+    'P2 (kg/cm2g)',
+    'T2 (degC)',
+    'V2 (m3)'
+  ].join('\t');
+  const row = [
+    atm,
+    p1,
+    t1,
+    v1,
+    p2,
+    '=((E2+A2)*G2*(C2+273.15))/((B2+A2)*D2)-273.15',
+    v2
+  ].join('\t');
+  return header + '\n' + row;
+}
+
+
+// --- Gas Density ---
+function calcGasDensity() {
+  const mw = parseFloat(document.getElementById('gd_mw')?.value);
+  const z  = parseFloat(document.getElementById('gd_z')?.value);
+  const p  = parseFloat(document.getElementById('gd_p')?.value);
+  const tC = parseFloat(document.getElementById('gd_t')?.value);
+  const rhoSpan = document.getElementById('gd_rho');
+
+  if (!rhoSpan || ![mw,z,p,tC].every(Number.isFinite) || z === 0) {
+    if (rhoSpan) rhoSpan.textContent = '-';
+    return;
+  }
+  // Excel: =((C3+1.03323)*98.0665*A3)/(B3*8.314*(D3+273.15))
+  const rho = ((p + 1.03323) * 98.0665 * mw) / (z * 8.314 * (tC + 273.15));
+  rhoSpan.textContent = rho.toFixed(3);
+}
+
+function getBlock10Tsv() {
+  const mw = document.getElementById('gd_mw')?.value || '';
+  const z  = document.getElementById('gd_z')?.value || '';
+  const p  = document.getElementById('gd_p')?.value || '';
+  const tC = document.getElementById('gd_t')?.value || '';
+  const header = [
+    'MW (-)',
+    'Comp. Factor Z (-)',
+    'Pressure (kg/cm2g)',
+    'Temperature (degC)',
+    'Gas Density (kg/m3)'
+  ].join('\t');
+  const row = [
+    mw,
+    z,
+    p,
+    tC,
+    '=((C2+1.03323)*98.0665*A2)/(B2*8.314*(D2+273.15))'
+  ].join('\t');
+  return header + '\n' + row;
+}
+
+// --- Clipboard common ---
 function copyTsvToClipboard(tsv, label) {
   if (navigator.clipboard && navigator.clipboard.writeText) {
     navigator.clipboard.writeText(tsv)
       .then(() => {
-        if (label) alert(label + ' Excel에서 A1 셀을 선택하고 붙여넣기 하세요.');
+        if (label) alert(label + ' In Excel, select cell A1 and paste.');
       })
-      .catch(() => alert('클립보드 복사에 실패했습니다.'));
+      .catch(() => alert('Failed to copy to clipboard.'));
   } else {
-    alert('브라우저가 클립보드 API를 지원하지 않습니다.');
+    alert('This browser does not support the Clipboard API.');
   }
 }
 
-// --- TSV 생성들 ---
+// --- TSV generators ---
 function getBlock1Tsv() {
   const mass = document.getElementById('mass1').value || '';
   const mw   = document.getElementById('mw1').value || '';
@@ -219,7 +407,7 @@ function getBlock5Tsv() {
   } else if (type === "HS") {
     formula = '=(PI()/12*(B2/1000)^3)+PI()*((B2/1000)^2)/4*(D2/1000)';
   } else {
-    // FLAT or 기타
+    // FLAT or others
     formula = '=PI()*((B2/1000)^2)/4*(D2/1000)';
   }
 
@@ -270,17 +458,26 @@ function getBlock6Tsv() {
 
 
 
-// --- 초기화 / 이벤트 ---
+// --- Init / events ---
 window.addEventListener('DOMContentLoaded', function () {
   const modeSelect = document.getElementById('calc-mode');
   const sectionMassVol = document.getElementById('section-mass-volume');
   const sectionStaticHead = document.getElementById('section-static-head');
   const sectionVessel = document.getElementById('section-vessel-volume');
 
+  const sectionCombined = document.getElementById('section-combined-gas');
+  const sectionGasDensity = document.getElementById('section-gas-density');
+
   function applyMode(mode) {
     sectionMassVol.style.display   = (mode === 'mass-volume')  ? ''    : 'none';
     sectionStaticHead.style.display = (mode === 'static-head')  ? ''    : 'none';
     sectionVessel.style.display    = (mode === 'vessel-volume') ? ''    : 'none';
+    if (sectionCombined) {
+      sectionCombined.style.display = (mode === 'combined-gas') ? '' : 'none';
+    }
+    if (sectionGasDensity) {
+      sectionGasDensity.style.display = (mode === 'gas-density') ? '' : 'none';
+    }
   }
 
   if (modeSelect) {
@@ -290,7 +487,7 @@ window.addEventListener('DOMContentLoaded', function () {
     });
   }
 
-  // 입력 이벤트 연결
+  // hook up input events
   const mass1 = document.getElementById('mass1');
   const mw1 = document.getElementById('mw1');
   const vol2_in = document.getElementById('vol2_in');
@@ -325,7 +522,57 @@ window.addEventListener('DOMContentLoaded', function () {
   if (h_length) h_length.addEventListener('input', calcHorizontalVessel);
   if (h_level) h_level.addEventListener('input', calcHorizontalVessel);
 
-  // 복사 버튼
+  // Gas Density listeners
+  const gd_mw = document.getElementById('gd_mw');
+  const gd_z  = document.getElementById('gd_z');
+  const gd_p  = document.getElementById('gd_p');
+  const gd_t  = document.getElementById('gd_t');
+  if (gd_mw) gd_mw.addEventListener('input', calcGasDensity);
+  if (gd_z)  gd_z.addEventListener('input', calcGasDensity);
+  if (gd_p)  gd_p.addEventListener('input', calcGasDensity);
+  if (gd_t)  gd_t.addEventListener('input', calcGasDensity);
+
+  // Combined Gas Law listeners
+  const atm_v2 = document.getElementById('atm_v2');
+  const p1_v2 = document.getElementById('p1_v2');
+  const t1_v2 = document.getElementById('t1_v2');
+  const v1_v2 = document.getElementById('v1_v2');
+  const p2_v2 = document.getElementById('p2_v2');
+  const t2_v2 = document.getElementById('t2_v2');
+  if (atm_v2) atm_v2.addEventListener('input', calcCombinedV2);
+  if (p1_v2) p1_v2.addEventListener('input', calcCombinedV2);
+  if (t1_v2) t1_v2.addEventListener('input', calcCombinedV2);
+  if (v1_v2) v1_v2.addEventListener('input', calcCombinedV2);
+  if (p2_v2) p2_v2.addEventListener('input', calcCombinedV2);
+  if (t2_v2) t2_v2.addEventListener('input', calcCombinedV2);
+
+  const atm_p2 = document.getElementById('atm_p2');
+  const p1_p2 = document.getElementById('p1_p2');
+  const t1_p2 = document.getElementById('t1_p2');
+  const v1_p2 = document.getElementById('v1_p2');
+  const t2_p2 = document.getElementById('t2_p2');
+  const v2_p2 = document.getElementById('v2_p2');
+  if (atm_p2) atm_p2.addEventListener('input', calcCombinedP2);
+  if (p1_p2) p1_p2.addEventListener('input', calcCombinedP2);
+  if (t1_p2) t1_p2.addEventListener('input', calcCombinedP2);
+  if (v1_p2) v1_p2.addEventListener('input', calcCombinedP2);
+  if (t2_p2) t2_p2.addEventListener('input', calcCombinedP2);
+  if (v2_p2) v2_p2.addEventListener('input', calcCombinedP2);
+
+  const atm_t2 = document.getElementById('atm_t2');
+  const p1_t2 = document.getElementById('p1_t2');
+  const t1_t2 = document.getElementById('t1_t2');
+  const v1_t2 = document.getElementById('v1_t2');
+  const p2_t2 = document.getElementById('p2_t2');
+  const v2_t2 = document.getElementById('v2_t2');
+  if (atm_t2) atm_t2.addEventListener('input', calcCombinedT2);
+  if (p1_t2) p1_t2.addEventListener('input', calcCombinedT2);
+  if (t1_t2) t1_t2.addEventListener('input', calcCombinedT2);
+  if (v1_t2) v1_t2.addEventListener('input', calcCombinedT2);
+  if (p2_t2) p2_t2.addEventListener('input', calcCombinedT2);
+  if (v2_t2) v2_t2.addEventListener('input', calcCombinedT2);
+
+  // copy buttons
   const copyButtons = document.querySelectorAll('.btn-copy');
   copyButtons.forEach(btn => {
     btn.addEventListener('click', function () {
@@ -337,40 +584,28 @@ window.addEventListener('DOMContentLoaded', function () {
       else if (block === '4') tsv = getBlock4Tsv();
       else if (block === '5') tsv = getBlock5Tsv();
       else if (block === '6') tsv = getBlock6Tsv();
-      if (tsv) copyTsvToClipboard(tsv, '현재 블록 표가 복사되었습니다.');
+      else if (block === '7') tsv = getBlock7Tsv();
+      else if (block === '8') tsv = getBlock8Tsv();
+      else if (block === '9') tsv = getBlock9Tsv();
+      else if (block === '10') tsv = getBlock10Tsv();
+      if (tsv) copyTsvToClipboard(tsv, 'Current block table has been copied.');
     });
   });
 
-  // Ctrl+C 가로채기
-  document.addEventListener('copy', function (e) {
-    const active = document.activeElement;
-    if (!active) return;
-    const blocks = [
-      {el: document.getElementById('block-1'), fn: getBlock1Tsv},
-      {el: document.getElementById('block-2'), fn: getBlock2Tsv},
-      {el: document.getElementById('block-3'), fn: getBlock3Tsv},
-      {el: document.getElementById('block-4'), fn: getBlock4Tsv},
-      {el: document.getElementById('block-5'), fn: getBlock5Tsv},
-      {el: document.getElementById('block-6'), fn: getBlock6Tsv}
-    ];
-    let tsv = null;
-    blocks.forEach(info => {
-      if (info.el && info.el.contains(active)) {
-        tsv = info.fn();
-      }
-    });
-    if (tsv) {
-      e.preventDefault();
-      e.clipboardData.setData('text/plain', tsv);
-      alert('현재 블록 내용(수식 포함)이 Excel용으로 복사되었습니다. A1 셀에 붙여넣으세요.');
-    }
-  });
 
-  // 초기 계산 한 번씩
+  // initial one-time calculations
   if (mass1 && mw1) calcBlock1();
   if (vol2_in && mw2) calcBlock2();
   if (p_kgcm2 && sg1) calcStaticHeadFromPressure();
   if (head_m_in && sg2) calcPressureFromStaticHead();
   if (v_head_type && v_diam && v_level) calcVerticalVessel();
   if (h_head_type && h_diam && h_length && h_level) calcHorizontalVessel();
+
+  // Combined Gas initial
+  if (document.getElementById('atm_v2')) calcCombinedV2();
+  if (document.getElementById('atm_p2')) calcCombinedP2();
+  if (document.getElementById('atm_t2')) calcCombinedT2();
+
+  // Gas Density initial
+  if (document.getElementById('gd_mw')) calcGasDensity();
 });
