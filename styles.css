@@ -196,3 +196,23 @@ main {
   flex-direction: column;
   gap: 24px;
 }
+
+
+#sheet-container-linesizing {
+  flex: 0 1 auto;
+  max-width: 1200px;
+  width: 100%;
+  background: #ffffff;
+  border-radius: 8px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  overflow-x: auto;
+}
+
+#sheet-container-linesizing .calc-table th,
+#sheet-container-linesizing .calc-table td {
+  font-size: 12px;
+  padding: 6px 8px;
+}

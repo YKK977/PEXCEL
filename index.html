@@ -19,6 +19,7 @@
         <option value="vessel-volume">Vessel Volume Calculation</option>
         <option value="combined-gas">Combined Gas Law</option>
         <option value="gas-density">Gas Density Calculation</option>
+        <option value="line-sizing">Line Sizing</option>
       </select>
     </div>
   </header>
@@ -405,6 +406,160 @@
       </section>
     </section>
 
+
+    <!-- Section 6: Line Sizing -->
+    <section id="section-line-sizing" style="display:none;">
+      <section id="sheet-container-linesizing">
+        <!-- Block LS1: Liquid (Incompressible) – From Mass Flow -->
+        <div class="block" id="block-ls1">
+          <div class="block-header">
+            <h2>LINE SIZING - Liquid (Incompressible) – From Mass Flow</h2>
+            <button class="btn-copy" data-block="ls1">Copy to Excel (with formulas)</button>
+          </div>
+          <table class="calc-table">
+            <colgroup>
+              <col /><col /><col /><col /><col /><col /><col /><col /><col />
+            </colgroup>
+            <tr>
+              <th>Mass Flow<br><span class="unit">kg/h</span></th>
+              <th>Density<br><span class="unit">kg/m³</span></th>
+              <th>Viscosity<br><span class="unit">cP</span></th>
+              <th>Press.<br><span class="unit">kg/cm²g</span></th>
+              <th>Temp.<br><span class="unit">°C</span></th>
+              <th>Pipe ID<br><span class="unit">inch</span></th>
+              <th>Rough.<br><span class="unit">ft</span></th>
+              <th>Vol. Flow<br><span class="unit">m³/h</span></th>
+              <th>ΔP / 100m<br><span class="unit">kg/cm²</span></th>
+              <th>Velocity<br><span class="unit">m/s</span></th>
+            </tr>
+            <tr>
+              <td><input type="number" id="ls1_mass" value="10000.0" step="0.1" /></td>
+              <td><input type="number" id="ls1_rho" value="1031.0" step="0.1" /></td>
+              <td><input type="number" id="ls1_mu" value="2.2" step="0.01" /></td>
+              <td><input type="number" id="ls1_p" value="0.5" step="0.01" /></td>
+              <td><input type="number" id="ls1_t" value="50.0" step="0.1" /></td>
+              <td><input type="number" id="ls1_d" value="2.0" step="0.01" /></td>
+              <td><input type="number" id="ls1_eps" value="0.00015" step="0.00001" /></td>
+              <td class="result"><span id="ls1_q">9.699</span></td>
+              <td class="result"><span id="ls1_dp100">0.470</span></td>
+              <td class="result"><span id="ls1_v">1.329</span></td>
+            </tr>
+          </table>
+        </div>
+
+        <!-- Block LS2: Liquid (Incompressible) – From Volumetric Flow -->
+        <div class="block" id="block-ls2">
+          <div class="block-header">
+            <h2>LINE SIZING - Liquid (Incompressible) – From Volumetric Flow</h2>
+            <button class="btn-copy" data-block="ls2">Copy to Excel (with formulas)</button>
+          </div>
+          <table class="calc-table">
+            <colgroup>
+              <col /><col /><col /><col /><col /><col /><col /><col /><col />
+            </colgroup>
+            <tr>
+              <th>Vol. Flow<br><span class="unit">m³/h</span></th>
+              <th>Density<br><span class="unit">kg/m³</span></th>
+              <th>Viscosity<br><span class="unit">cP</span></th>
+              <th>Press.<br><span class="unit">kg/cm²g</span></th>
+              <th>Temp.<br><span class="unit">°C</span></th>
+              <th>Pipe ID<br><span class="unit">inch</span></th>
+              <th>Rough.<br><span class="unit">ft</span></th>
+              <th>Mass Flow<br><span class="unit">kg/h</span></th>
+              <th>ΔP / 100m<br><span class="unit">kg/cm²</span></th>
+              <th>Velocity<br><span class="unit">m/s</span></th>
+            </tr>
+            <tr>
+              <td><input type="number" id="ls2_q" value="9.7" step="0.1" /></td>
+              <td><input type="number" id="ls2_rho" value="1031.0" step="0.1" /></td>
+              <td><input type="number" id="ls2_mu" value="2.2" step="0.01" /></td>
+              <td><input type="number" id="ls2_p" value="0.5" step="0.01" /></td>
+              <td><input type="number" id="ls2_t" value="50.0" step="0.1" /></td>
+              <td><input type="number" id="ls2_d" value="2.0" step="0.01" /></td>
+              <td><input type="number" id="ls2_eps" value="0.00015" step="0.00001" /></td>
+              <td class="result"><span id="ls2_mass">10000.0</span></td>
+              <td class="result"><span id="ls2_dp100">0.470</span></td>
+              <td class="result"><span id="ls2_v">1.329</span></td>
+            </tr>
+          </table>
+        </div>
+
+        
+        <!-- Block LS3: Vapor – Darcy Pressure Drop (Incompressible Approximation) -->
+        <div class="block" id="block-ls3">
+          <div class="block-header">
+            <h2>LINE SIZING - Vapor Darcy Pressure Drop (Incompressible Approximation)</h2>
+            <button class="btn-copy" data-block="ls3">Copy to Excel (with formulas)</button>
+          </div>
+
+          <!-- Input table -->
+          <table class="calc-table">
+            <colgroup>
+              <col /><col /><col /><col /><col /><col /><col /><col /><col /><col /><col />
+            </colgroup>
+            <tr>
+              <th>Mass Flow<br><span class="unit">kg/h</span></th>
+              <th>MW<br><span class="unit">kg/kmol</span></th>
+              <th>Viscosity<br><span class="unit">cP</span></th>
+              <th>Z-factor<br><span class="unit">-</span></th>
+              <th>k<br><span class="unit">Cp/Cv</span></th>
+              <th>Known Side<br><span class="unit">1=In / 2=Out</span></th>
+              <th>Known P<br><span class="unit">kg/cm²g</span></th>
+              <th>Temp<br><span class="unit">°C</span></th>
+              <th>Pipe ID<br><span class="unit">inch</span></th>
+              <th>Rough.<br><span class="unit">ft</span></th>
+              <th>EQ Length<br><span class="unit">m</span></th>
+            </tr>
+            <tr>
+              <td><input type="number" id="ls3_mass" value="11500.0" step="0.1" /></td>
+              <td><input type="number" id="ls3_mw" value="18.0" step="0.1" /></td>
+              <td><input type="number" id="ls3_mu" value="0.010" step="0.001" /></td>
+              <td><input type="number" id="ls3_z" value="0.90" step="0.01" /></td>
+              <td><input type="number" id="ls3_k" value="1.3" step="0.01" /></td>
+              <td><input type="number" id="ls3_side" value="1" step="1" /></td>
+              <td><input type="number" id="ls3_pknown" value="2.65" step="0.01" /></td>
+              <td><input type="number" id="ls3_t" value="150.0" step="0.1" /></td>
+              <td><input type="number" id="ls3_d" value="7.981" step="0.001" /></td>
+              <td><input type="number" id="ls3_eps" value="0.00015" step="0.00001" /></td>
+              <td><input type="number" id="ls3_leq" value="100.0" step="0.1" /></td>
+            </tr>
+          </table>
+
+          <!-- Output table -->
+          <table class="calc-table" style="margin-top:8px;">
+            <colgroup>
+              <col /><col /><col /><col /><col /><col /><col /><col /><col /><col /><col />
+            </colgroup>
+            <tr>
+              <th>P_in<br><span class="unit">kg/cm²g</span></th>
+              <th>P_out<br><span class="unit">kg/cm²g</span></th>
+              <th>Total ΔP<br><span class="unit">kg/cm²</span></th>
+              <th>ΔP / 100m<br><span class="unit">kg/cm²</span></th>
+              <th>ρ_in<br><span class="unit">kg/m³</span></th>
+              <th>ρ_out<br><span class="unit">kg/m³</span></th>
+              <th>v_in<br><span class="unit">m/s</span></th>
+              <th>v_out<br><span class="unit">m/s</span></th>
+              <th>Mach_in<br><span class="unit">-</span></th>
+              <th>Mach_out<br><span class="unit">-</span></th>
+              <th>a (Sonic)<br><span class="unit">m/s</span></th>
+            </tr>
+            <tr>
+              <td class="result"><span id="ls3_pin">2.650</span></td>
+              <td class="result"><span id="ls3_pout">2.475</span></td>
+              <td class="result"><span id="ls3_dp">0.175</span></td>
+              <td class="result"><span id="ls3_dp100">0.175</span></td>
+              <td class="result"><span id="ls3_rho_in">2.05</span></td>
+              <td class="result"><span id="ls3_rho_out">1.96</span></td>
+              <td class="result"><span id="ls3_v_in">48.20</span></td>
+              <td class="result"><span id="ls3_v_out">50.61</span></td>
+              <td class="result"><span id="ls3_mach_in">0.096</span></td>
+              <td class="result"><span id="ls3_mach_out">0.100</span></td>
+              <td class="result"><span id="ls3_a">504.1</span></td>
+            </tr>
+          </table>
+        </div>
+      </section>
+    </section>
   </main>
 
   <script src="main.js"></script>
