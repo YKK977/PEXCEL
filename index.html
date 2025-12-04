@@ -8,23 +8,65 @@
 <body>
   <header>
     <div class="title-area">
-      <div class="title-main">PEXCEL</div>
-      <div class="title-sub">펙셀</div>
+      <span class="title-main">PEXCEL</span>
+      <span class="title-sub">펙셀</span>
     </div>
     <div id="mode-selector">
-      <label for="calc-mode">Calculator:</label>
-      <select id="calc-mode">
-        <option value="mass-volume" selected>Mass and Volume Flowrate Calculation</option>
-        <option value="static-head">Static Head Calculation</option>
-        <option value="vessel-volume">Vessel Volume Calculation</option>
-        <option value="combined-gas">Combined Gas Law</option>
-        <option value="gas-density">Gas Density Calculation</option>
-        <option value="line-sizing">Line Sizing</option>
+      <label for="category-select">Category:</label>
+      <select id="category-select">
+        <option value="vessel" selected>Vessel Calculations</option>
+        <option value="pump">Pump Calculations</option>
+        <option value="heat-exchanger">Heat Exchanger Calculations</option>
+        <option value="instrumentation">Instrumentation Calculations</option>
+        <option value="line-sizing">Line Sizing Calculations</option>
+        <option value="physical-properties">Physical Properties</option>
       </select>
     </div>
   </header>
 
   <main>
+    <nav id="index-vessel" class="sub-index" style="display:none;">
+      <div class="sub-index-title">Index</div>
+      <a href="#block-5">Vertical Vessel Volume (Liquid Level)</a>
+      <a href="#block-6">Horizontal Vessel Volume (Liquid Level)</a>
+      <a href="#section-residence">Residence Time</a>
+    </nav>
+
+    <nav id="index-pump" class="sub-index" style="display:none;">
+      <div class="sub-index-title">Index</div>
+      <a href="#section-npsh">NPSHa Calculation</a>
+      <a href="#section-pump-power">Hydraulic Power &amp; Shaft Power</a>
+      <a href="#section-static-head">Static Head Calculation</a>
+    </nav>
+
+    <nav id="index-heat-exchanger" class="sub-index" style="display:none;">
+      <div class="sub-index-title">Index</div>
+      <a href="#section-heat-duty">Heat Duty / Outlet Temperature / Required Area</a>
+      <a href="#section-steam-duty">Steam / Condensate Duty &amp; Mass Flow</a>
+    </nav>
+
+    <nav id="index-instrumentation" class="sub-index" style="display:none;">
+      <div class="sub-index-title">Index</div>
+      <a href="#section-cv-invert">Cv Inversion (Q ↔ ΔP)</a>
+      <a href="#section-orifice">Restriction Orifice – Liquid Flow</a>
+    </nav>
+
+    <nav id="index-line-sizing" class="sub-index" style="display:none;">
+      <div class="sub-index-title">Index</div>
+      <a href="#block-ls1">Liquid Line Sizing (Mass Flow)</a>
+      <a href="#block-ls2">Liquid Line Sizing (Volumetric Flow)</a>
+      <a href="#block-ls3">Vapor Darcy Pressure Drop (Approx.)</a>
+      <a href="#block-ls3">Erosional Velocity / Gas Velocity Check</a>
+    </nav>
+
+    <nav id="index-physical-properties" class="sub-index" style="display:none;">
+      <div class="sub-index-title">Index</div>
+      <a href="#section-mass-volume">Mass and Volume Flowrate Calculation</a>
+      <a href="#section-combined-gas">Combined Gas Law</a>
+      <a href="#section-gas-density">Gas Density Calculation</a>
+      <a href="#section-mixing-temp">Mixing Temperature (Two-Stream)</a>
+    </nav>
+
     <!-- Section 1: Mass & Volume Flowrate (default) -->
     <section id="section-mass-volume">
       <section id="sheet-container">
@@ -40,9 +82,6 @@
               <col />
               <col />
             </colgroup>
-            <tr>
-              <th colspan="3" class="title">Mass Flowrate</th>
-            </tr>
             <tr>
               <th>Mass Flowrate<br><span class="unit">kg/h</span></th>
               <th>MW<br><span class="unit">kg/kmol</span></th>
@@ -73,9 +112,6 @@
               <col />
               <col />
             </colgroup>
-            <tr>
-              <th colspan="3" class="title">Volume Flowrate</th>
-            </tr>
             <tr>
               <th>Volume Flowrate<br><span class="unit">Nm³/h</span></th>
               <th>MW<br><span class="unit">kg/kmol</span></th>
@@ -112,9 +148,6 @@
               <col />
             </colgroup>
             <tr>
-              <th colspan="3" class="title">kg/cm² ▶ m</th>
-            </tr>
-            <tr>
               <th>D. Pressure<br><span class="unit">kg/cm²</span></th>
               <th>S.G<br><span class="unit">-</span></th>
               <th>Head<br><span class="unit">m</span></th>
@@ -145,9 +178,6 @@
               <col />
             </colgroup>
             <tr>
-              <th colspan="3" class="title">m ▶ kg/cm²</th>
-            </tr>
-            <tr>
               <th>Head<br><span class="unit">m</span></th>
               <th>S.G<br><span class="unit">-</span></th>
               <th>D. Pressure<br><span class="unit">kg/cm²</span></th>
@@ -173,7 +203,7 @@
         <!-- Vertical Vessel -->
         <div class="block" id="block-5">
           <div class="block-header">
-            <h2>VERTICAL Vessel Volume (to Liquid Level)</h2>
+            <h2>Vertical Vessel Volume (Liquid Level)</h2>
             <button class="btn-copy" data-block="5">Copy to Excel (with formulas)</button>
           </div>
           <table class="calc-table">
@@ -184,9 +214,6 @@
               <col />
               <col />
             </colgroup>
-            <tr>
-              <th colspan="5" class="title">VERTICAL</th>
-            </tr>
             <tr>
               <th>Head Type</th>
               <th>Diameter<br><span class="unit">mm</span></th>
@@ -213,12 +240,50 @@
               </td>
             </tr>
           </table>
+<div class="vessel-visual">
+  <svg id="vessel-vertical-svg"
+       class="vessel-svg vessel-svg-vertical"
+       viewBox="0 30 120 170">
+
+    <!-- Body (길이 약 절반으로 축소) -->
+    <rect x="30" y="40" width="60" height="120"
+          fill="none" stroke="#555" stroke-width="2" />
+
+    <!-- Bottom Head: 2:1E -->
+    <path id="vv-head-2_1E"
+          d="M30 160 Q60 200 90 160"
+          fill="none" stroke="#555" stroke-width="2" />
+
+    <!-- Bottom Head: HS (Hemisphere) -->
+    <path id="vv-head-HS"
+          d="M30 160 A30 30 0 0 0 90 160"
+          fill="none" stroke="#555" stroke-width="2"
+          style="display:none;" />
+
+    <!-- Bottom Head liquid fill (2:1E) -->
+    <path id="vv-head-2_1E-liquid"
+          d="M30 160 Q60 200 90 160 L90 160 L30 160 Z"
+          fill="#4aa3ff" fill-opacity="0.6" />
+
+    <!-- Bottom Head liquid fill (HS) -->
+    <path id="vv-head-HS-liquid"
+          d="M30 160 A30 30 0 0 0 90 160 L90 160 L30 160 Z"
+          fill="#4aa3ff" fill-opacity="0.6"
+          style="display:none;" />
+
+    <!-- 액체 (Body 내부만 채움) -->
+    <rect id="vessel-vertical-liquid"
+          x="31" y="160" width="58" height="0"
+          fill="#4aa3ff" fill-opacity="0.6" />
+  </svg>
+</div>
+
         </div>
 
         <!-- Horizontal Vessel -->
         <div class="block" id="block-6">
           <div class="block-header">
-            <h2>HORIZONTAL Vessel Volume (to Liquid Level)</h2>
+            <h2>Horizontal Vessel Volume (Liquid Level)</h2>
             <button class="btn-copy" data-block="6">Copy to Excel (with formulas)</button>
           </div>
           <table class="calc-table">
@@ -229,9 +294,6 @@
               <col />
               <col />
             </colgroup>
-            <tr>
-              <th colspan="5" class="title">HORIZONTAL</th>
-            </tr>
             <tr>
               <th>Type<br><span class="unit">2:1E / HS</span></th>
               <th>Diameter<br><span class="unit">mm</span></th>
@@ -257,6 +319,69 @@
               </td>
             </tr>
           </table>
+
+<div class="vessel-visual">
+<svg id="vessel-horizontal-svg"
+     class="vessel-svg vessel-svg-horizontal"
+     viewBox="0 0 260 160">>
+
+    <!-- Body -->
+    <rect x="40" y="40" width="180" height="80"
+          fill="none" stroke="#555" stroke-width="2" />
+
+    <!-- Left Head: 2:1E (더 볼록하게) -->
+    <path id="hv-head-2_1E-left"
+          d="M40 40 Q0 80 40 120"
+          fill="none" stroke="#555" stroke-width="2" />
+
+    <!-- Right Head: 2:1E -->
+    <path id="hv-head-2_1E-right"
+          d="M220 40 Q260 80 220 120"
+          fill="none" stroke="#555" stroke-width="2" />
+
+    <!-- Left Head: HS (Hemisphere) -->
+    <path id="hv-head-HS-left"
+          d="M40 40 A40 40 0 0 0 40 120"
+          fill="none" stroke="#555" stroke-width="2"
+          style="display:none;" />
+
+    <!-- Right Head: HS -->
+    <path id="hv-head-HS-right"
+          d="M220 40 A40 40 0 0 1 220 120"
+          fill="none" stroke="#555" stroke-width="2"
+          style="display:none;" />
+
+    <!-- 2:1E liquid (Body+Head 전체를 clipPath로 자름) -->
+    <defs>
+      <clipPath id="hv-clip-2_1E">
+        <rect x="40" y="40" width="180" height="80" />
+        <path d="M40 40 Q0 80 40 120" />
+        <path d="M220 40 Q260 80 220 120" />
+      </clipPath>
+      <clipPath id="hv-clip-HS">
+        <rect x="40" y="40" width="180" height="80" />
+        <path d="M40 40 A40 40 0 0 0 40 120" />
+        <path d="M220 40 A40 40 0 0 1 220 120" />
+      </clipPath>
+    </defs>
+
+    <rect id="vessel-horizontal-liquid-2_1E"
+          x="0" y="120" width="260" height="0"
+          fill="#4aa3ff" fill-opacity="0.6"
+          clip-path="url(#hv-clip-2_1E)" />
+
+    <rect id="vessel-horizontal-liquid-HS"
+          x="0" y="120" width="260" height="0"
+          fill="#4aa3ff" fill-opacity="0.6"
+          clip-path="url(#hv-clip-HS)"
+          style="display:none;" />
+  </svg>
+</div>
+
+<!-- 🔹 여기까지 -->
+
+</div> <!-- block-6 끝 -->
+
         </div>
       </section>
     </section>
@@ -413,7 +538,7 @@
         <!-- Block LS1: Liquid (Incompressible) – From Mass Flow -->
         <div class="block" id="block-ls1">
           <div class="block-header">
-            <h2>LINE SIZING - Liquid (Incompressible) – From Mass Flow</h2>
+            <h2>Liquid Line Sizing (Mass Flow)</h2>
             <button class="btn-copy" data-block="ls1">Copy to Excel (with formulas)</button>
           </div>
           <table class="calc-table">
@@ -450,7 +575,7 @@
         <!-- Block LS2: Liquid (Incompressible) – From Volumetric Flow -->
         <div class="block" id="block-ls2">
           <div class="block-header">
-            <h2>LINE SIZING - Liquid (Incompressible) – From Volumetric Flow</h2>
+            <h2>Liquid Line Sizing (Volumetric Flow)</h2>
             <button class="btn-copy" data-block="ls2">Copy to Excel (with formulas)</button>
           </div>
           <table class="calc-table">
@@ -488,7 +613,7 @@
         <!-- Block LS3: Vapor – Darcy Pressure Drop (Incompressible Approximation) -->
         <div class="block" id="block-ls3">
           <div class="block-header">
-            <h2>LINE SIZING - Vapor Darcy Pressure Drop (Incompressible Approximation)</h2>
+            <h2>Vapor Darcy Pressure Drop (Approx.)</h2>
             <button class="btn-copy" data-block="ls3">Copy to Excel (with formulas)</button>
           </div>
 
@@ -528,7 +653,7 @@
           <!-- Output table -->
           <table class="calc-table" style="margin-top:8px;">
             <colgroup>
-              <col /><col /><col /><col /><col /><col /><col /><col /><col /><col /><col />
+              <col /><col /><col /><col /><col /><col /><col /><col /><col /><col /><col /><col /><col />
             </colgroup>
             <tr>
               <th>P_in<br><span class="unit">kg/cm²g</span></th>
@@ -542,6 +667,8 @@
               <th>Mach_in<br><span class="unit">-</span></th>
               <th>Mach_out<br><span class="unit">-</span></th>
               <th>a (Sonic)<br><span class="unit">m/s</span></th>
+              <th>Erosional Limit v<sub>e</sub><br><span class="unit">m/s</span></th>
+              <th>v<sub>out</sub> / v<sub>e</sub><br><span class="unit">-</span></th>
             </tr>
             <tr>
               <td class="result"><span id="ls3_pin">2.650</span></td>
@@ -555,12 +682,323 @@
               <td class="result"><span id="ls3_mach_in">0.096</span></td>
               <td class="result"><span id="ls3_mach_out">0.100</span></td>
               <td class="result"><span id="ls3_a">504.1</span></td>
+              <td class="result"><span id="ls3_ve">120.0</span></td>
+              <td class="result"><span id="ls3_vratio">0.42</span></td>
             </tr>
           </table>
         </div>
+
+</div>
       </section>
     </section>
-  </main>
+  
+    <!-- Extra placeholder sections for future modules -->
+      <!-- Residence Time -->
+      <section id="section-residence" style="display:none;">
+        <section id="sheet-container-residence">
+          <div class="block" id="block-residence">
+            <div class="block-header">
+              <h2>Residence Time</h2>
+              <button class="btn-copy" data-block="residence">Copy to Excel (with formulas)</button>
+            </div>
+            <table class="calc-table">
+              <colgroup>
+                <col /><col /><col /><col />
+              </colgroup>
+              <tr>
+                <th>Holdup Volume<br><span class="unit">m³</span></th>
+                <th>Flowrate<br><span class="unit">m³/h</span></th>
+                <th>Residence Time<br><span class="unit">h</span></th>
+                <th>Residence Time<br><span class="unit">min</span></th>
+              </tr>
+              <tr>
+                <td><input type="number" id="res_vol" value="10.0" step="0.1" /></td>
+                <td><input type="number" id="res_q" value="20.0" step="0.1" /></td>
+                <td class="result"><span id="res_time_h">0.5</span></td>
+                <td class="result"><span id="res_time_min">30.0</span></td>
+              </tr>
+              <tr>
+                <td colspan="4" class="formula">
+                  Residence Time (h) = Volume (m³) ÷ Flowrate (m³/h)
+                </td>
+              </tr>
+            </table>
+          </div>
+        </section>
+      </section>
+
+      <!-- NPSHa -->
+      <section id="section-npsh" style="display:none;">
+        <section id="sheet-container-npsh">
+          <div class="block" id="block-npsh">
+            <div class="block-header">
+              <h2>NPSHa Calculation</h2>
+              <button class="btn-copy" data-block="npsh">Copy to Excel (with formulas)</button>
+            </div>
+            <table class="calc-table">
+              <colgroup>
+                <col /><col /><col /><col /><col /><col />
+              </colgroup>
+              <tr>
+                <th>Surface Pressure<br><span class="unit">kg/cm²g</span></th>
+                <th>Static Head (above pump)<br><span class="unit">m</span></th>
+                <th>Suction Line Loss<br><span class="unit">m</span></th>
+                <th>Specific Gravity<br><span class="unit">-</span></th>
+                <th>Vapor Pressure<br><span class="unit">kg/cm² abs</span></th>
+                <th>NPSHa<br><span class="unit">m</span></th>
+              </tr>
+              <tr>
+                <td><input type="number" id="npsh_ps" value="0.0" step="0.01" /></td>
+                <td><input type="number" id="npsh_hs" value="5.0" step="0.1" /></td>
+                <td><input type="number" id="npsh_hf" value="1.0" step="0.1" /></td>
+                <td><input type="number" id="npsh_sg" value="1.0" step="0.01" /></td>
+                <td><input type="number" id="npsh_pv" value="0.2" step="0.01" /></td>
+                <td class="result"><span id="npsh_avail">4.0</span></td>
+              </tr>
+              <tr>
+                <td colspan="6" class="formula">
+                  NPSHa (m) = ((P<sub>surface,abs</sub> × 10) ÷ SG) + H<sub>s</sub> − h<sub>f</sub> − ((P<sub>v,abs</sub> × 10) ÷ SG)
+                  &nbsp;&nbsp;[P in kg/cm², head ≈ 10 m per kg/cm²]
+                </td>
+              </tr>
+            </table>
+          </div>
+        </section>
+      </section>
+
+      <!-- Pump Power -->
+      <section id="section-pump-power" style="display:none;">
+        <section id="sheet-container-pump-power">
+          <div class="block" id="block-pump-power">
+            <div class="block-header">
+              <h2>Hydraulic Power &amp; Shaft Power</h2>
+              <button class="btn-copy" data-block="pump-power">Copy to Excel (with formulas)</button>
+            </div>
+            <table class="calc-table">
+              <colgroup>
+                <col /><col /><col /><col /><col />
+              </colgroup>
+              <tr>
+                <th>Flowrate<br><span class="unit">m³/h</span></th>
+                <th>ΔP<br><span class="unit">kg/cm²</span></th>
+                <th>P<sub>hyd</sub><br><span class="unit">kW</span></th>
+                <th>Efficiency<br><span class="unit">%</span></th>
+                <th>P<sub>shaft</sub><br><span class="unit">kW</span></th>
+              </tr>
+              <tr>
+                <td><input type="number" id="hp_q" value="50.0" step="0.1" /></td>
+                <td><input type="number" id="hp_dp" value="5.0" step="0.1" /></td>
+                <td class="result"><span id="hp_ph">6.8</span></td>
+                <td><input type="number" id="hp_eff" value="70.0" step="0.1" /></td>
+                <td class="result"><span id="hp_ps">9.7</span></td>
+              </tr>
+              <tr>
+                <td colspan="5" class="formula">
+                  P<sub>hyd</sub> (kW) = ΔP(Pa) × Q(m³/s) ÷ 1000,
+                  &nbsp; ΔP(Pa) = ΔP(kg/cm²) × 98,066.5
+                </td>
+              </tr>
+            </table>
+          </div>
+        </section>
+      </section>
+
+      <!-- Heat Duty / Area -->
+      <section id="section-heat-duty" style="display:none;">
+        <section id="sheet-container-heat-duty">
+          <div class="block" id="block-heat-duty">
+            <div class="block-header">
+              <h2>Heat Duty / Outlet Temperature / Required Area</h2>
+              <button class="btn-copy" data-block="heat-duty">Copy to Excel (with formulas)</button>
+            </div>
+            <table class="calc-table">
+              <colgroup>
+                <col /><col /><col /><col /><col /><col /><col />
+              </colgroup>
+              <tr>
+                <th>Mass Flow<br><span class="unit">kg/h</span></th>
+                <th>C<sub>p</sub><br><span class="unit">kJ/kg·K</span></th>
+                <th>T<sub>in</sub><br><span class="unit">°C</span></th>
+                <th>T<sub>out</sub><br><span class="unit">°C</span></th>
+                <th>U<br><span class="unit">W/m²·K</span></th>
+                <th>LMTD<br><span class="unit">K</span></th>
+                <th>Heat Duty / Area<br><span class="unit">Q (kW) / A (m²)</span></th>
+              </tr>
+              <tr>
+                <td><input type="number" id="hd_m" value="10000" step="1" /></td>
+                <td><input type="number" id="hd_cp" value="4.19" step="0.01" /></td>
+                <td><input type="number" id="hd_tin" value="20.0" step="0.1" /></td>
+                <td><input type="number" id="hd_tout" value="80.0" step="0.1" /></td>
+                <td><input type="number" id="hd_u" value="800" step="1" /></td>
+                <td><input type="number" id="hd_lmtd" value="25.0" step="0.1" /></td>
+                <td class="result">
+                  <span id="hd_q">697.0</span> kW /
+                  <span id="hd_a">34.9</span> m²
+                </td>
+              </tr>
+              <tr>
+                <td colspan="7" class="formula">
+                  Q (kW) = m(kg/h) × C<sub>p</sub>(kJ/kg·K) × (T<sub>out</sub> − T<sub>in</sub>) ÷ 3600,
+                  &nbsp; A = Q(W) ÷ (U × LMTD)
+                </td>
+              </tr>
+            </table>
+          </div>
+        </section>
+      </section>
+
+      <!-- Steam / Condensate Duty -->
+      <section id="section-steam-duty" style="display:none;">
+        <section id="sheet-container-steam-duty">
+          <div class="block" id="block-steam-duty">
+            <div class="block-header">
+              <h2>Steam / Condensate Duty &amp; Mass Flow</h2>
+              <button class="btn-copy" data-block="steam-duty">Copy to Excel (with formulas)</button>
+            </div>
+            <table class="calc-table">
+              <colgroup>
+                <col /><col /><col /><col />
+              </colgroup>
+              <tr>
+                <th>Heat Duty<br><span class="unit">kW</span></th>
+                <th>Latent Heat λ<br><span class="unit">kJ/kg</span></th>
+                <th>Steam Flow<br><span class="unit">kg/h</span></th>
+                <th>Condensate Flow<br><span class="unit">kg/h</span></th>
+              </tr>
+              <tr>
+                <td><input type="number" id="sd_q" value="500.0" step="1" /></td>
+                <td><input type="number" id="sd_lambda" value="2200" step="10" /></td>
+                <td class="result"><span id="sd_msteam">818.2</span></td>
+                <td class="result"><span id="sd_mcond">818.2</span></td>
+              </tr>
+              <tr>
+                <td colspan="4" class="formula">
+                  Steam Flow (kg/h) = Q(kW) × 3600 ÷ λ(kJ/kg) &nbsp; (Condensate ≈ Steam Flow)
+                </td>
+              </tr>
+            </table>
+          </div>
+        </section>
+      </section>
+
+      <!-- Control Valve Cv Inversion -->
+      <section id="section-cv-invert" style="display:none;">
+        <section id="sheet-container-cv-invert">
+          <div class="block" id="block-cv">
+            <div class="block-header">
+              <h2>Control Valve – Cv Inversion (Q ↔ ΔP)</h2>
+              <button class="btn-copy" data-block="cv-invert">Copy to Excel (with formulas)</button>
+            </div>
+            <table class="calc-table">
+              <colgroup>
+                <col /><col /><col /><col /><col /><col />
+              </colgroup>
+              <tr>
+                <th>Flow Q (m³/h)<br><span class="unit">input</span></th>
+                <th>ΔP (kg/cm²)<br><span class="unit">input</span></th>
+                <th>Specific Gravity<br><span class="unit">-</span></th>
+                <th>Cv<br><span class="unit">US gpm-based</span></th>
+                <th>Q from Cv &amp; ΔP<br><span class="unit">m³/h</span></th>
+                <th>ΔP from Cv &amp; Q<br><span class="unit">kg/cm²</span></th>
+              </tr>
+              <tr>
+                <td><input type="number" id="cv_q_in" value="50.0" step="0.1" /></td>
+                <td><input type="number" id="cv_dp_in" value="1.0" step="0.01" /></td>
+                <td><input type="number" id="cv_sg" value="1.0" step="0.01" /></td>
+                <td><input type="number" id="cv_cv" value="20.0" step="0.1" /></td>
+                <td class="result"><span id="cv_q_calc">47.5</span></td>
+                <td class="result"><span id="cv_dp_calc">1.11</span></td>
+              </tr>
+              <tr>
+                <td colspan="6" class="formula">
+                  Q(gpm) = Cv · √(ΔP(psi)/SG),
+                  &nbsp; Q(m³/h) ≈ Q(gpm) ÷ 4.4029,
+                  &nbsp; ΔP(kg/cm²) ≈ ΔP(psi) × 0.0703
+                </td>
+              </tr>
+            </table>
+          </div>
+        </section>
+      </section>
+
+      <!-- Restriction Orifice – Liquid Flow -->
+      <section id="section-orifice" style="display:none;">
+        <section id="sheet-container-orifice">
+          <div class="block" id="block-orifice">
+            <div class="block-header">
+              <h2>Restriction Orifice – Liquid Flow</h2>
+              <button class="btn-copy" data-block="orifice">Copy to Excel (with formulas)</button>
+            </div>
+            <table class="calc-table">
+              <colgroup>
+                <col /><col /><col /><col /><col /><col />
+              </colgroup>
+              <tr>
+                <th>ΔP<br><span class="unit">kg/cm²</span></th>
+                <th>Orifice Diameter<br><span class="unit">mm</span></th>
+                <th>Discharge Coeff. C<br><span class="unit">-</span></th>
+                <th>Density<br><span class="unit">kg/m³</span></th>
+                <th>Flowrate Q<br><span class="unit">m³/h</span></th>
+                <th>Velocity in Orifice<br><span class="unit">m/s</span></th>
+              </tr>
+              <tr>
+                <td><input type="number" id="ro_dp" value="1.0" step="0.01" /></td>
+                <td><input type="number" id="ro_d" value="25.0" step="0.1" /></td>
+                <td><input type="number" id="ro_c" value="0.62" step="0.01" /></td>
+                <td><input type="number" id="ro_rho" value="1000" step="1" /></td>
+                <td class="result"><span id="ro_q">13.7</span></td>
+                <td class="result"><span id="ro_v">7.7</span></td>
+              </tr>
+              <tr>
+                <td colspan="6" class="formula">
+                  Q = C · A · √(2 ΔP / ρ), &nbsp; A = π d² / 4, &nbsp; ΔP in Pa, ρ in kg/m³
+                </td>
+              </tr>
+            </table>
+          </div>
+        </section>
+      </section>
+
+      <!-- Mixing Temperature -->
+      <section id="section-mixing-temp" style="display:none;">
+        <section id="sheet-container-mixing-temp">
+          <div class="block" id="block-mixing">
+            <div class="block-header">
+              <h2>Mixing Temperature (Two-Stream)</h2>
+              <button class="btn-copy" data-block="mixing-temp">Copy to Excel (with formulas)</button>
+            </div>
+            <table class="calc-table">
+              <colgroup>
+                <col /><col /><col /><col /><col /><col /><col />
+              </colgroup>
+              <tr>
+                <th>m₁<br><span class="unit">kg/h</span></th>
+                <th>Cp₁<br><span class="unit">kJ/kg·K</span></th>
+                <th>T₁<br><span class="unit">°C</span></th>
+                <th>m₂<br><span class="unit">kg/h</span></th>
+                <th>Cp₂<br><span class="unit">kJ/kg·K</span></th>
+                <th>T₂<br><span class="unit">°C</span></th>
+                <th>T<sub>mix</sub><br><span class="unit">°C</span></th>
+              </tr>
+              <tr>
+                <td><input type="number" id="mix_m1" value="1000" step="1" /></td>
+                <td><input type="number" id="mix_cp1" value="4.19" step="0.01" /></td>
+                <td><input type="number" id="mix_t1" value="20.0" step="0.1" /></td>
+                <td><input type="number" id="mix_m2" value="500" step="1" /></td>
+                <td><input type="number" id="mix_cp2" value="4.19" step="0.01" /></td>
+                <td><input type="number" id="mix_t2" value="80.0" step="0.1" /></td>
+                <td class="result"><span id="mix_tmix">40.0</span></td>
+              </tr>
+              <tr>
+                <td colspan="7" class="formula">
+                  T<sub>mix</sub> = (m₁ Cₚ₁ T₁ + m₂ Cₚ₂ T₂) ÷ (m₁ Cₚ₁ + m₂ Cₚ₂)
+                </td>
+              </tr>
+            </table>
+          </div>
+        </section>
+      </section>
+</main>
 
   <script src="main.js"></script>
 </body>

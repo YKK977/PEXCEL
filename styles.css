@@ -2,37 +2,40 @@
 
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, "Arial", sans-serif;
   background: #f5f5f5;
 }
 
 /* 헤더 영역 */
 header {
+  position: sticky;     /* ← 스크롤해도 고정 */
+  top: 0;               /* ← 화면 맨 위에 붙이기 */
+  z-index: 1000;        /* ← 다른 요소보다 위에 표시 */
   padding: 16px 24px;
   background: #ffffff;
   border-bottom: 1px solid #ddd;
   display: flex;
   align-items: flex-end;
-  gap: 32px;          /* 제목과 드롭다운 사이 간격 */
+  gap: 32px;
 }
 
 .title-area {
   display: flex;
   align-items: flex-end; /* 하단 정렬 */
   gap: 8px;
-  line-height: 1;
 }
 
 .title-main {
   font-size: 32px;
   font-weight: 800;
-  letter-spacing: 1px;
+  line-height: 1;      /* 높이 최소화(정렬 정확도 상승) */
 }
 
 .title-sub {
-  font-size: 12px;
-  color: #666;
-  margin-bottom: 2px; /* 살짝 내려서 하단 맞춤 느낌 */
+  font-size: 14px;
+  color: #555;
+  align-self: flex-end;  /* 영어 텍스트의 하단에 붙이기 */
+  padding-bottom: 0px;   /* 미세 위치 조절: 필요 시 숫자 조정 */
 }
 
 #mode-selector {
@@ -53,32 +56,30 @@ header {
 
 /* 메인 영역: 가운데 배치 */
 main {
+  flex: 1;
   display: flex;
-  justify-content: center;   /* 시트 컨테이너를 가운데로 */
-  padding: 16px;
+  flex-direction: column;
+  align-items: center;
+  padding: 8px 24px 24px;
+  background-color: #f5f5f5;
 }
 
 /* 각 시트 컨테이너: 최대 너비 제한, 중앙 정렬 */
 #sheet-container,
 #sheet-container-static,
-#sheet-container-vessel {
-  flex: 0 1 auto;
-  max-width: 600px;          /* 열이 너무 넓어지지 않도록 제한 */
+#sheet-container {
   width: 100%;
-  background: #ffffff;
-  border-radius: 8px;
-  padding: 16px;
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
+  max-width: 1200px;
+  margin: 0 auto;
 }
 
 /* 블록 카드 */
 .block {
-  border: 1px solid #e0e0e0;
+  background-color: #ffffff;
   border-radius: 8px;
-  padding: 12px 16px 16px;
-  background: #fcfcfc;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
+  padding: 10px 12px;
+  margin: 6px 0;
 }
 
 .block-header {
@@ -166,16 +167,10 @@ main {
   background: #fafafa;
 }
 
-#sheet-container-combined {
-  flex: 0 1 auto;
-  max-width: 800px;
+#sheet-container {
   width: 100%;
-  background: #ffffff;
-  border-radius: 8px;
-  padding: 16px;
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
+  max-width: 1200px;
+  margin: 0 auto;
 }
 
 /* constant input style */
@@ -185,34 +180,121 @@ main {
   font-weight: normal;
 }
 
-#sheet-container-gasdensity {
-  flex: 0 1 auto;
-  max-width: 600px;
+#sheet-container {
   width: 100%;
-  background: #ffffff;
-  border-radius: 8px;
-  padding: 16px;
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
+  max-width: 1200px;
+  margin: 0 auto;
 }
 
 
-#sheet-container-linesizing {
-  flex: 0 1 auto;
-  max-width: 1200px;
+#sheet-container {
   width: 100%;
-  background: #ffffff;
-  border-radius: 8px;
-  padding: 16px;
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
-  overflow-x: auto;
+  max-width: 1200px;
+  margin: 0 auto;
 }
 
 #sheet-container-linesizing .calc-table th,
-#sheet-container-linesizing .calc-table td {
-  font-size: 12px;
-  padding: 6px 8px;
+#sheet-container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
 }
+
+
+/* --- LEFT FIXED SIDEBAR INDEX --- */
+.sub-index {
+  position: fixed;
+  left: 0;
+  top: 70px;             /* header 바로 아래에서 시작 */
+  width: 260px;
+  height: calc(100% - 70px);
+  overflow-y: auto;
+  padding: 16px 14px;
+  background: #ffffff;
+  border-right: 1px solid #ddd;
+
+  display: flex;
+  flex-direction: column;   /* 세로 정렬 */
+  gap: 8px;
+
+  z-index: 30;
+}
+
+.sub-index-title {
+  font-weight: 600;
+  margin-bottom: 6px;
+  white-space: normal;
+}
+
+.sub-index a {
+  display: block;
+  text-decoration: none;
+  padding: 6px 10px;
+  border-radius: 999px;
+  border: 1px solid #ddd;
+  background: #fafafa;
+  font-size: 0.9rem;
+}
+
+.sub-index a:hover {
+  background: #eef3ff;
+  border-color: #b0c0ff;
+}
+
+/* main content needs left margin so it doesn't hide under sidebar */
+main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 8px 24px 24px;
+  background-color: #f5f5f5;
+  margin-left: 250px;   /* sidebar width + 여유 */
+  
+  max-width: 1100px;      /* ⬅ 최대 폭 제한 */
+  width: calc(100% - 240px);
+}
+
+.category-title {
+  max-width: 1200px;
+  margin: 8px auto 4px auto;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #333;
+}
+
+.vessel-visual {
+  width: 100%;
+  display: flex;
+  justify-content: center;   /* 가운데 정렬 */
+  padding: 0px 0 00px;      /* 위아래 여백 */
+}
+
+/* 기존 고정 width/height를 "가로 꽉 차게"로 변경 */
+.vessel-svg-horizontal {
+  width: 100%;        /* block 안에서 가로 꽉 차게 */
+  max-width: 500px;   /* 너무 커지지 않게 상한만 걸기 (원하면 더 크게/작게 조절) */
+  height: auto;       /* 비율 유지 */
+}
+
+.block {
+  padding-bottom: 10px;
+}
+
+.vessel-svg {
+  /* 공통은 비워두거나 필요하면만 사용 */
+}
+
+/* Vertical 모형 비율 조정 */
+.vessel-svg-vertical {
+  width: 220px;
+  height: 150px;
+}
+
+/* Horizontal 모형 */
+.vessel-svg-horizontal {
+  width: 300px;
+  height: 100px;
+}
+
+
