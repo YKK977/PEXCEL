@@ -14,12 +14,13 @@
     <div id="mode-selector">
       <label for="category-select">Category:</label>
       <select id="category-select">
-        <option value="vessel" selected>Vessel Calculations</option>
+        <option value="vessel">Vessel Calculations</option>
         <option value="pump">Pump Calculations</option>
         <option value="heat-exchanger">Heat Exchanger Calculations</option>
         <option value="instrumentation">Instrumentation Calculations</option>
         <option value="line-sizing">Line Sizing Calculations</option>
-        <option value="physical-properties">Physical Properties</option>
+        <option value="unit-conversion">Unit Conversion</option>
+        <option value="physical-properties">Miscellaneous Calculations</option>
       </select>
     </div>
   </header>
@@ -27,21 +28,23 @@
   <main>
     <nav id="index-vessel" class="sub-index" style="display:none;">
       <div class="sub-index-title">Index</div>
-      <a href="#block-5">Vertical Vessel Volume (Liquid Level)</a>
-      <a href="#block-6">Horizontal Vessel Volume (Liquid Level)</a>
+      <a href="#block-5">Vertical Liquid Volume by Level</a>
+      <a href="#block-6">Horizontal Liquid Volume by Level</a>
       <a href="#section-residence">Residence Time</a>
     </nav>
 
     <nav id="index-pump" class="sub-index" style="display:none;">
       <div class="sub-index-title">Index</div>
-      <a href="#section-npsh">NPSHa Calculation</a>
-      <a href="#section-pump-power">Hydraulic Power &amp; Shaft Power</a>
-      <a href="#section-static-head">Static Head Calculation</a>
+	  <a href="#section-static-head">Static Head</a>
+      <a href="#section-npsh">NPSHa</a>
+      <a href="#section-pump-power">Hydraulic Power &amp; Shaft Power</a>      
     </nav>
 
     <nav id="index-heat-exchanger" class="sub-index" style="display:none;">
       <div class="sub-index-title">Index</div>
       <a href="#section-heat-duty">Heat Duty / Outlet Temperature / Required Area</a>
+      <a href="#block-hx-q2w">Q → W (Gcal/h → kg/h)</a>
+      <a href="#block-hx-w2q">W → Q (kg/h → Gcal/h)</a>
       <a href="#section-steam-duty">Steam / Condensate Duty &amp; Mass Flow</a>
     </nav>
 
@@ -61,11 +64,17 @@
 
     <nav id="index-physical-properties" class="sub-index" style="display:none;">
       <div class="sub-index-title">Index</div>
-      <a href="#section-mass-volume">Mass and Volume Flowrate Calculation</a>
+      <a href="#section-mass-volume">kg/h ↔ Nm³/h</a>
       <a href="#section-combined-gas">Combined Gas Law</a>
       <a href="#section-gas-density">Gas Density Calculation</a>
       <a href="#section-mixing-temp">Mixing Temperature (Two-Stream)</a>
     </nav>
+
+<nav id="index-unit-conversion" class="sub-index" style="display:none;">
+  <div class="sub-index-title">Index</div>
+  <a href="#block-uc-pressure">Pressure: Any ↔ kg/cm²g</a>
+  <a href="#block-uc-temp">Temperature: Any ↔ °C</a>
+</nav>
 
     <!-- Section 1: Mass & Volume Flowrate (default) -->
     <section id="section-mass-volume">
@@ -73,7 +82,7 @@
         <!-- Block 1: Mass → Volume -->
         <div class="block" id="block-1">
           <div class="block-header">
-            <h2>Mass ▶ Volume Flowrate</h2>
+            <h2>kg/h ↔ Nm³/h: kg/h to Nm³/h</h2>
             <button class="btn-copy" data-block="1">Copy to Excel (with formulas)</button>
           </div>
           <table class="calc-table">
@@ -103,7 +112,7 @@
         <!-- Block 2: Volume → Mass -->
         <div class="block" id="block-2">
           <div class="block-header">
-            <h2>Volume ▶ Mass Flowrate</h2>
+            <h2>kg/h ↔ Nm³/h: Nm³/h to kg/h</h2>
             <button class="btn-copy" data-block="2">Copy to Excel (with formulas)</button>
           </div>
           <table class="calc-table">
@@ -132,13 +141,13 @@
       </section>
     </section>
 
-    <!-- Section 2: Static Head Calculation (initially hidden) -->
+    <!-- Section 2: Static Head (initially hidden) -->
     <section id="section-static-head" style="display:none;">
       <section id="sheet-container-static">
         <!-- Block 3: kg/cm2 ▶ m -->
         <div class="block" id="block-3">
           <div class="block-header">
-            <h2>kg/cm² ▶ m (Static Head)</h2>
+            <h2>Static Head: kg/cm² to m</h2>
             <button class="btn-copy" data-block="3">Copy to Excel (with formulas)</button>
           </div>
           <table class="calc-table">
@@ -168,7 +177,7 @@
         <!-- Block 4: m ▶ kg/cm2 -->
         <div class="block" id="block-4">
           <div class="block-header">
-            <h2>m ▶ kg/cm² (Static Head)</h2>
+            <h2>Static Head: m to kg/cm²</h2>
             <button class="btn-copy" data-block="4">Copy to Excel (with formulas)</button>
           </div>
           <table class="calc-table">
@@ -203,7 +212,7 @@
         <!-- Vertical Vessel -->
         <div class="block" id="block-5">
           <div class="block-header">
-            <h2>Vertical Vessel Volume (Liquid Level)</h2>
+            <h2>Vertical Liquid Volume by Level</h2>
             <button class="btn-copy" data-block="5">Copy to Excel (with formulas)</button>
           </div>
           <table class="calc-table">
@@ -229,14 +238,14 @@
                   <option value="FLAT">FLAT</option>
                 </select>
               </td>
-              <td><input type="number" id="v_diam" value="1300" step="1" /></td>
-              <td><input type="number" id="v_length" value="1020" step="1" /></td>
-              <td><input type="number" id="v_level" value="1020" step="1" /></td>
+              <td><input type="number" id="v_diam" value="1500" step="1" /></td>
+              <td><input type="number" id="v_length" value="3000" step="1" /></td>
+              <td><input type="number" id="v_level" value="2000" step="1" /></td>
               <td class="result"><span id="v_volume">1.6</span></td>
             </tr>
             <tr>
               <td colspan="5" class="formula">
-                Provided Vertical Excel formulas (2:1E / HS / FLAT) are used as-is to calculate Volume (m³).
+                Liquid volume is calculated by adding the full geometric head volume (2:1E / HS / Flat) to the cylindrical volume πD²/4 × Level. Head partial filling is not evaluated.
               </td>
             </tr>
           </table>
@@ -283,7 +292,7 @@
         <!-- Horizontal Vessel -->
         <div class="block" id="block-6">
           <div class="block-header">
-            <h2>Horizontal Vessel Volume (Liquid Level)</h2>
+            <h2>Horizontal Liquid Volume by Level</h2>
             <button class="btn-copy" data-block="6">Copy to Excel (with formulas)</button>
           </div>
           <table class="calc-table">
@@ -308,14 +317,14 @@
                   <option value="HS">HS</option>
                 </select>
               </td>
-              <td><input type="number" id="h_diam" value="1550" step="1" /></td>
-              <td><input type="number" id="h_length" value="4000" step="1" /></td>
-              <td><input type="number" id="h_level" value="1550" step="1" /></td>
+              <td><input type="number" id="h_diam" value="1500" step="1" /></td>
+              <td><input type="number" id="h_length" value="3000" step="1" /></td>
+              <td><input type="number" id="h_level" value="1000" step="1" /></td>
               <td class="result"><span id="h_volume">8.5</span></td>
             </tr>
             <tr>
               <td colspan="5" class="formula">
-                Provided Horizontal Excel formulas are used as-is to calculate Volume (m³) at the given Level.
+                Liquid volume is calculated from the circular-segment area at the given level and applied to the cylindrical length, with partial head volumes (2:1E / HS) added using their geometric formulas.
               </td>
             </tr>
           </table>
@@ -724,6 +733,8 @@
               </tr>
             </table>
           </div>
+          
+
         </section>
       </section>
 
@@ -732,7 +743,7 @@
         <section id="sheet-container-npsh">
           <div class="block" id="block-npsh">
             <div class="block-header">
-              <h2>NPSHa Calculation</h2>
+              <h2>NPSHa</h2>
               <button class="btn-copy" data-block="npsh">Copy to Excel (with formulas)</button>
             </div>
             <table class="calc-table">
@@ -740,7 +751,7 @@
                 <col /><col /><col /><col /><col /><col />
               </colgroup>
               <tr>
-                <th>Surface Pressure<br><span class="unit">kg/cm²g</span></th>
+                <th>Suction Vessel Pressure<br><span class="unit">kg/cm²g</span></th>
                 <th>Static Head (above pump)<br><span class="unit">m</span></th>
                 <th>Suction Line Loss<br><span class="unit">m</span></th>
                 <th>Specific Gravity<br><span class="unit">-</span></th>
@@ -748,11 +759,11 @@
                 <th>NPSHa<br><span class="unit">m</span></th>
               </tr>
               <tr>
-                <td><input type="number" id="npsh_ps" value="0.0" step="0.01" /></td>
+                <td><input type="number" id="npsh_ps" value="1.2" step="0.01" /></td>
                 <td><input type="number" id="npsh_hs" value="5.0" step="0.1" /></td>
-                <td><input type="number" id="npsh_hf" value="1.0" step="0.1" /></td>
-                <td><input type="number" id="npsh_sg" value="1.0" step="0.01" /></td>
-                <td><input type="number" id="npsh_pv" value="0.2" step="0.01" /></td>
+                <td><input type="number" id="npsh_hf" value="0.8" step="0.1" /></td>
+                <td><input type="number" id="npsh_sg" value="1.2" step="0.01" /></td>
+                <td><input type="number" id="npsh_pv" value="1.1" step="0.01" /></td>
                 <td class="result"><span id="npsh_avail">4.0</span></td>
               </tr>
               <tr>
@@ -763,6 +774,8 @@
               </tr>
             </table>
           </div>
+          
+
         </section>
       </section>
 
@@ -800,6 +813,8 @@
               </tr>
             </table>
           </div>
+          
+
         </section>
       </section>
 
@@ -844,6 +859,74 @@
               </tr>
             </table>
           </div>
+          <div class="block" id="block-hx-q2w">
+            <div class="block-header">
+              <h2>Heat Exchanger: Q → W</h2>
+              <button class="btn-copy" data-block="hx-q2w">Copy to Excel (with formulas)</button>
+            </div>
+            <table class="calc-table">
+              <colgroup>
+                <col /><col /><col /><col /><col /><col />
+              </colgroup>
+              <tr>
+                <th>Heat Duty Q<br><span class="unit">Gcal/h</span></th>
+                <th>C<sub>p,in</sub><br><span class="unit">kcal/(kg·°C)</span></th>
+                <th>C<sub>p,out</sub><br><span class="unit">kcal/(kg·°C)</span></th>
+                <th>T<sub>in</sub><br><span class="unit">°C</span></th>
+                <th>T<sub>out</sub><br><span class="unit">°C</span></th>
+                <th>Mass Flow W<br><span class="unit">kg/h</span></th>
+              </tr>
+              <tr>
+                <td><input type="number" id="hx_q_q2w" value="1.721" step="0.01" /></td>
+                <td><input type="number" id="hx_cin_q2w" value="0.556" step="0.01" /></td>
+                <td><input type="number" id="hx_cout_q2w" value="0.534" step="0.01" /></td>
+                <td><input type="number" id="hx_tin_q2w" value="152.0" step="0.1" /></td>
+                <td><input type="number" id="hx_tout_q2w" value="133.0" step="0.1" /></td>
+                <td class="result"><span id="hx_w_q2w">16666.7</span></td>
+              </tr>
+              <tr>
+                <td colspan="6" class="formula">
+                  W(kg/h) = Q(Gcal/h) × 10⁶ ÷ (C<sub>p,avg</sub>(kcal/kg·°C) × (T<sub>in</sub> − T<sub>out</sub>)),&nbsp;
+                  C<sub>p,avg</sub> = (C<sub>p,in</sub> + C<sub>p,out</sub>) ÷ 2
+                </td>
+              </tr>
+            </table>
+          </div>
+
+          <div class="block" id="block-hx-w2q">
+            <div class="block-header">
+              <h2>Heat Exchanger: W → Q</h2>
+              <button class="btn-copy" data-block="hx-w2q">Copy to Excel (with formulas)</button>
+            </div>
+            <table class="calc-table">
+              <colgroup>
+                <col /><col /><col /><col /><col /><col />
+              </colgroup>
+              <tr>
+                <th>Mass Flow W<br><span class="unit">kg/h</span></th>
+                <th>C<sub>p,in</sub><br><span class="unit">kcal/(kg·°C)</span></th>
+                <th>C<sub>p,out</sub><br><span class="unit">kcal/(kg·°C)</span></th>
+                <th>T<sub>in</sub><br><span class="unit">°C</span></th>
+                <th>T<sub>out</sub><br><span class="unit">°C</span></th>
+                <th>Heat Duty Q<br><span class="unit">Gcal/h</span></th>
+              </tr>
+              <tr>
+                <td><input type="number" id="hx_w_w2q" value="166200" step="1" /></td>
+                <td><input type="number" id="hx_cin_w2q" value="0.556" step="0.01" /></td>
+                <td><input type="number" id="hx_cout_w2q" value="0.534" step="0.01" /></td>
+                <td><input type="number" id="hx_tin_w2q" value="152.0" step="0.1" /></td>
+                <td><input type="number" id="hx_tout_w2q" value="133.0" step="0.1" /></td>
+                <td class="result"><span id="hx_q_w2q">0.600</span></td>
+              </tr>
+              <tr>
+                <td colspan="6" class="formula">
+                  Q(Gcal/h) = W(kg/h) × C<sub>p,avg</sub>(kcal/kg·°C) × (T<sub>in</sub> − T<sub>out</sub>) ÷ 10⁶,&nbsp;
+                  C<sub>p,avg</sub> = (C<sub>p,in</sub> + C<sub>p,out</sub>) ÷ 2
+                </td>
+              </tr>
+            </table>
+          </div>
+
         </section>
       </section>
 
@@ -878,6 +961,8 @@
               </tr>
             </table>
           </div>
+          
+
         </section>
       </section>
 
@@ -918,6 +1003,8 @@
               </tr>
             </table>
           </div>
+          
+
         </section>
       </section>
 
@@ -956,6 +1043,8 @@
               </tr>
             </table>
           </div>
+          
+
         </section>
       </section>
 
@@ -996,8 +1085,143 @@
               </tr>
             </table>
           </div>
+          
+
         </section>
       </section>
+
+<!-- Section UC: Unit Conversion - Pressure -->
+<section id="section-uc-pressure" class="calc-section" style="display:none;">
+  <section id="sheet-container-uc-pressure">
+    <div class="block" id="block-uc-pressure">
+      <div class="block-header">
+        <h2>Pressure Unit Conversion (To / From kg/cm²g)</h2>
+        <button class="btn-copy" data-block="uc-pressure">Copy to Excel (with formulas)</button>
+      </div>
+      <table class="calc-table">
+        <colgroup>
+          <col /><col /><col /><col /><col />
+        </colgroup>
+        <tr>
+          <th rowspan="2">Unit</th>
+          <th colspan="2">To kg/cm²g</th>
+          <th colspan="2">From kg/cm²g</th>
+        </tr>
+        <tr>
+          <th>Input</th>
+          <th>kg/cm²g</th>
+          <th>Input</th>
+          <th>Unit</th>
+        </tr>
+        <tr>
+          <td>kg/cm²(a)</td>
+          <td><input type="number" id="uc_p_kgcm2a_in" value="14.000" step="0.001" /></td>
+          <td class="result"><span id="uc_p_kgcm2a_to_g">13.000</span></td>
+          <td><input type="number" id="uc_p_from_g_kgcm2a_in" value="1.000" step="0.001" /></td>
+          <td class="result"><span id="uc_p_from_g_kgcm2a">2.033</span></td>
+        </tr>
+        <tr>
+          <td>bar(g)</td>
+          <td><input type="number" id="uc_p_bar_in" value="1.37" step="0.001" /></td>
+          <td class="result"><span id="uc_p_bar_to_g">1.397</span></td>
+          <td><input type="number" id="uc_p_from_g_bar_in" value="1.000" step="0.001" /></td>
+          <td class="result"><span id="uc_p_from_g_bar">0.981</span></td>
+        </tr>
+        <tr>
+          <td>atm(g)</td>
+          <td><input type="number" id="uc_p_atm_in" value="1.0" step="0.001" /></td>
+          <td class="result"><span id="uc_p_atm_to_g">1.033</span></td>
+          <td><input type="number" id="uc_p_from_g_atm_in" value="1.000" step="0.001" /></td>
+          <td class="result"><span id="uc_p_from_g_atm">0.968</span></td>
+        </tr>
+        <tr>
+          <td>mmH₂O(g)</td>
+          <td><input type="number" id="uc_p_mmh2o_in" value="1000" step="1" /></td>
+          <td class="result"><span id="uc_p_mmh2o_to_g">0.100</span></td>
+          <td><input type="number" id="uc_p_from_g_mmh2o_in" value="1.000" step="0.001" /></td>
+          <td class="result"><span id="uc_p_from_g_mmh2o">10000</span></td>
+        </tr>
+        <tr>
+          <td>mmHg(g)</td>
+          <td><input type="number" id="uc_p_mmhg_in" value="760" step="1" /></td>
+          <td class="result"><span id="uc_p_mmhg_to_g">1.033</span></td>
+          <td><input type="number" id="uc_p_from_g_mmhg_in" value="1.000" step="0.001" /></td>
+          <td class="result"><span id="uc_p_from_g_mmhg">735.6</span></td>
+        </tr>
+        <tr>
+          <td>kPa(g)</td>
+          <td><input type="number" id="uc_p_kpa_in" value="100" step="0.1" /></td>
+          <td class="result"><span id="uc_p_kpa_to_g">1.020</span></td>
+          <td><input type="number" id="uc_p_from_g_kpa_in" value="1.000" step="0.001" /></td>
+          <td class="result"><span id="uc_p_from_g_kpa">98.1</span></td>
+        </tr>
+        <tr>
+          <td>psig</td>
+          <td><input type="number" id="uc_p_psi_in" value="14.5" step="0.1" /></td>
+          <td class="result"><span id="uc_p_psi_to_g">1.020</span></td>
+          <td><input type="number" id="uc_p_from_g_psi_in" value="1.000" step="0.001" /></td>
+          <td class="result"><span id="uc_p_from_g_psi">14.2</span></td>
+        </tr>
+      </table>
+      <div class="formula">
+        1 atm = 1.03323 kg/cm²(a), 1 bar = 1.019716 kg/cm², 1 mmH₂O = 0.0001 kg/cm², 1 psi = 0.0703069 kg/cm², 1 kPa = 0.01019716 kg/cm².
+      </div>
+    </div>
+  </section>
+</section>
+
+<!-- Section UC: Unit Conversion - Temperature -->
+<section id="section-uc-temperature" class="calc-section" style="display:none;">
+  <section id="sheet-container-uc-temperature">
+    <div class="block" id="block-uc-temp">
+      <div class="block-header">
+        <h2>Temperature Unit Conversion (To / From °C)</h2>
+        <button class="btn-copy" data-block="uc-temp">Copy to Excel (with formulas)</button>
+      </div>
+      <table class="calc-table">
+        <colgroup>
+          <col /><col /><col /><col /><col />
+        </colgroup>
+        <tr>
+          <th rowspan="2">Unit</th>
+          <th colspan="2">To °C</th>
+          <th colspan="2">From °C</th>
+        </tr>
+        <tr>
+          <th>Input</th>
+          <th>°C</th>
+          <th>Input</th>
+          <th>Unit</th>
+        </tr>
+        <tr>
+          <td>K</td>
+          <td><input type="number" id="uc_t_k_in" value="298.15" step="0.01" /></td>
+          <td class="result"><span id="uc_t_k_to_c">25.0</span></td>
+          <td><input type="number" id="uc_t_from_c_k_in" value="25.0" step="0.1" /></td>
+          <td class="result"><span id="uc_t_from_c_k">298.15</span></td>
+        </tr>
+        <tr>
+          <td>°F</td>
+          <td><input type="number" id="uc_t_f_in" value="77.0" step="0.1" /></td>
+          <td class="result"><span id="uc_t_f_to_c">25.0</span></td>
+          <td><input type="number" id="uc_t_from_c_f_in" value="25.0" step="0.1" /></td>
+          <td class="result"><span id="uc_t_from_c_f">77.0</span></td>
+        </tr>
+        <tr>
+          <td>R</td>
+          <td><input type="number" id="uc_t_r_in" value="536.67" step="0.1" /></td>
+          <td class="result"><span id="uc_t_r_to_c">25.0</span></td>
+          <td><input type="number" id="uc_t_from_c_r_in" value="25.0" step="0.1" /></td>
+          <td class="result"><span id="uc_t_from_c_r">536.67</span></td>
+        </tr>
+      </table>
+      <div class="formula">
+        °C = K − 273.15,   °C = (°F − 32) × 5/9,   °C = (R − 491.67) × 5/9.  From °C: K = °C + 273.15,  °F = °C × 9/5 + 32,  R = (°C + 273.15) × 9/5.
+      </div>
+    </div>
+  </section>
+</section>
+
 </main>
 
   <script src="main.js"></script>

@@ -298,3 +298,15 @@ main {
 }
 
 
+
+
+/* Unified style for formula notes under blocks (Unit Conversion etc.) */
+.block > .formula {
+  background: #fafafa;
+  padding: 6px 10px;
+  margin-top: 6px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 12px;
+  color: #444;
+}

@@ -1,3 +1,30 @@
+'use strict';
+
+// ===== Common DOM & numeric helpers =====
+const $ = (id) => document.getElementById(id);
+
+const num = (id) => {
+  const el = $(id);
+  return el ? parseFloat(el.value) : NaN;
+};
+
+const setText = (id, value) => {
+  const el = $(id);
+  if (el) el.textContent = value;
+};
+
+const fmt = (value, digits = 3) =>
+  Number.isFinite(value) ? value.toFixed(digits) : '-';
+
+const bindInputs = (ids, handler, eventName = 'input') => {
+  ids.forEach((id) => {
+    const el = $(id);
+    if (el) el.addEventListener(eventName, handler);
+  });
+};
+
+// ===== End of helpers =====
+
 // main.js - All calculations + Excel copy + mode switching in one file
 
 // --- Mass / Volume ---
@@ -437,6 +464,173 @@ function getBlock10Tsv() {
   return header + '\n' + row;
 }
 
+
+// --- Unit Conversion: Pressure & Temperature ---
+
+const UC_ATM_KGCM2 = 1.03323;
+const UC_BAR_TO_KGCM2 = 1.019716;
+const UC_MMH2O_TO_KGCM2 = 0.0001;
+const UC_PSI_TO_KGCM2 = 0.0703069;
+const UC_KPA_TO_KGCM2 = 0.01019716;
+
+function calcUcPressure() {
+  // To kg/cm2g
+  const kgcm2a = parseFloat(document.getElementById('uc_p_kgcm2a_in')?.value);
+  const bar = parseFloat(document.getElementById('uc_p_bar_in')?.value);
+  const atm = parseFloat(document.getElementById('uc_p_atm_in')?.value);
+  const mmh2o = parseFloat(document.getElementById('uc_p_mmh2o_in')?.value);
+  const mmhg = parseFloat(document.getElementById('uc_p_mmhg_in')?.value);
+  const kpa = parseFloat(document.getElementById('uc_p_kpa_in')?.value);
+  const psi = parseFloat(document.getElementById('uc_p_psi_in')?.value);
+
+  const out_kgcm2a = document.getElementById('uc_p_kgcm2a_to_g');
+  const out_bar = document.getElementById('uc_p_bar_to_g');
+  const out_atm = document.getElementById('uc_p_atm_to_g');
+  const out_mmh2o = document.getElementById('uc_p_mmh2o_to_g');
+  const out_mmhg = document.getElementById('uc_p_mmhg_to_g');
+  const out_kpa = document.getElementById('uc_p_kpa_to_g');
+  const out_psi = document.getElementById('uc_p_psi_to_g');
+
+  if (out_kgcm2a && Number.isFinite(kgcm2a)) out_kgcm2a.textContent = (kgcm2a - UC_ATM_KGCM2).toFixed(3);
+  if (out_bar && Number.isFinite(bar)) out_bar.textContent = (bar * UC_BAR_TO_KGCM2).toFixed(3);
+  if (out_atm && Number.isFinite(atm)) out_atm.textContent = (atm * UC_ATM_KGCM2).toFixed(3);
+  if (out_mmh2o && Number.isFinite(mmh2o)) out_mmh2o.textContent = (mmh2o * UC_MMH2O_TO_KGCM2).toFixed(3);
+  if (out_mmhg && Number.isFinite(mmhg)) out_mmhg.textContent = (mmhg * (UC_ATM_KGCM2 / 760.0)).toFixed(3);
+  if (out_kpa && Number.isFinite(kpa)) out_kpa.textContent = (kpa * UC_KPA_TO_KGCM2).toFixed(3);
+  if (out_psi && Number.isFinite(psi)) out_psi.textContent = (psi * UC_PSI_TO_KGCM2).toFixed(3);
+
+  // From kg/cm2g
+  const g_kgcm2a = parseFloat(document.getElementById('uc_p_from_g_kgcm2a_in')?.value);
+  const g_bar = parseFloat(document.getElementById('uc_p_from_g_bar_in')?.value);
+  const g_atm = parseFloat(document.getElementById('uc_p_from_g_atm_in')?.value);
+  const g_mmh2o = parseFloat(document.getElementById('uc_p_from_g_mmh2o_in')?.value);
+  const g_mmhg = parseFloat(document.getElementById('uc_p_from_g_mmhg_in')?.value);
+  const g_kpa = parseFloat(document.getElementById('uc_p_from_g_kpa_in')?.value);
+  const g_psi = parseFloat(document.getElementById('uc_p_from_g_psi_in')?.value);
+
+  const out_g_kgcm2a = document.getElementById('uc_p_from_g_kgcm2a');
+  const out_g_bar = document.getElementById('uc_p_from_g_bar');
+  const out_g_atm = document.getElementById('uc_p_from_g_atm');
+  const out_g_mmh2o = document.getElementById('uc_p_from_g_mmh2o');
+  const out_g_mmhg = document.getElementById('uc_p_from_g_mmhg');
+  const out_g_kpa = document.getElementById('uc_p_from_g_kpa');
+  const out_g_psi = document.getElementById('uc_p_from_g_psi');
+
+  if (out_g_kgcm2a && Number.isFinite(g_kgcm2a)) out_g_kgcm2a.textContent = (g_kgcm2a + UC_ATM_KGCM2).toFixed(3);
+  if (out_g_bar && Number.isFinite(g_bar)) out_g_bar.textContent = (g_bar / UC_BAR_TO_KGCM2).toFixed(3);
+  if (out_g_atm && Number.isFinite(g_atm)) out_g_atm.textContent = (g_atm / UC_ATM_KGCM2).toFixed(3);
+  if (out_g_mmh2o && Number.isFinite(g_mmh2o)) out_g_mmh2o.textContent = (g_mmh2o / UC_MMH2O_TO_KGCM2).toFixed(1);
+  if (out_g_mmhg && Number.isFinite(g_mmhg)) out_g_mmhg.textContent = (g_mmhg / (UC_ATM_KGCM2 / 760.0)).toFixed(1);
+  if (out_g_kpa && Number.isFinite(g_kpa)) out_g_kpa.textContent = (g_kpa / UC_KPA_TO_KGCM2).toFixed(1);
+  if (out_g_psi && Number.isFinite(g_psi)) out_g_psi.textContent = (g_psi / UC_PSI_TO_KGCM2).toFixed(2);
+}
+
+function calcUcTemp() {
+  const k = parseFloat(document.getElementById('uc_t_k_in')?.value);
+  const f = parseFloat(document.getElementById('uc_t_f_in')?.value);
+  const r = parseFloat(document.getElementById('uc_t_r_in')?.value);
+
+  const out_k = document.getElementById('uc_t_k_to_c');
+  const out_f = document.getElementById('uc_t_f_to_c');
+  const out_r = document.getElementById('uc_t_r_to_c');
+
+  if (out_k && Number.isFinite(k)) out_k.textContent = (k - 273.15).toFixed(2);
+  if (out_f && Number.isFinite(f)) out_f.textContent = ((f - 32) * 5/9).toFixed(2);
+  if (out_r && Number.isFinite(r)) out_r.textContent = ((r - 491.67) * 5/9).toFixed(2);
+
+  const c_k = parseFloat(document.getElementById('uc_t_from_c_k_in')?.value);
+  const c_f = parseFloat(document.getElementById('uc_t_from_c_f_in')?.value);
+  const c_r = parseFloat(document.getElementById('uc_t_from_c_r_in')?.value);
+
+  const out_c_k = document.getElementById('uc_t_from_c_k');
+  const out_c_f = document.getElementById('uc_t_from_c_f');
+  const out_c_r = document.getElementById('uc_t_from_c_r');
+
+  if (out_c_k && Number.isFinite(c_k)) out_c_k.textContent = (c_k + 273.15).toFixed(2);
+  if (out_c_f && Number.isFinite(c_f)) out_c_f.textContent = (c_f * 9/5 + 32).toFixed(2);
+  if (out_c_r && Number.isFinite(c_r)) out_c_r.textContent = ((c_r + 273.15) * 9/5).toFixed(2);
+}
+
+
+// --- Unit Conversion TSV generators ---
+function getUcPressureTsv() {
+  const header = ['Unit','Input','kg/cm2g','Input(kg/cm2g)','Unit value'].join('\t');
+  const rows = [];
+
+  rows.push(['kg/cm2(a)',
+    document.getElementById('uc_p_kgcm2a_in')?.value || '',
+    '=B2-1.03323',
+    document.getElementById('uc_p_from_g_kgcm2a_in')?.value || '',
+    '=D2+1.03323'
+  ]);
+  rows.push(['bar(g)',
+    document.getElementById('uc_p_bar_in')?.value || '',
+    '=B3*1.019716',
+    document.getElementById('uc_p_from_g_bar_in')?.value || '',
+    '=D3/1.019716'
+  ]);
+  rows.push(['atm(g)',
+    document.getElementById('uc_p_atm_in')?.value || '',
+    '=B4*1.03323',
+    document.getElementById('uc_p_from_g_atm_in')?.value || '',
+    '=D4/1.03323'
+  ]);
+  rows.push(['mmH2O(g)',
+    document.getElementById('uc_p_mmh2o_in')?.value || '',
+    '=B5*0.0001',
+    document.getElementById('uc_p_from_g_mmh2o_in')?.value || '',
+    '=D5/0.0001'
+  ]);
+  rows.push(['mmHg(g)',
+    document.getElementById('uc_p_mmhg_in')?.value || '',
+    '=(B6*(1.03323/760))',
+    document.getElementById('uc_p_from_g_mmhg_in')?.value || '',
+    '=D6/(1.03323/760)'
+  ]);
+  rows.push(['kPa(g)',
+    document.getElementById('uc_p_kpa_in')?.value || '',
+    '=B7*0.01019716',
+    document.getElementById('uc_p_from_g_kpa_in')?.value || '',
+    '=D7/0.01019716'
+  ]);
+  rows.push(['psig',
+    document.getElementById('uc_p_psi_in')?.value || '',
+    '=B8*0.0703069',
+    document.getElementById('uc_p_from_g_psi_in')?.value || '',
+    '=D8/0.0703069'
+  ]);
+
+  const body = rows.map(r => r.join('\t')).join('\n');
+  return header + '\n' + body;
+}
+
+function getUcTempTsv() {
+  const header = ['Unit','Input','C','Input(C)','Unit value'].join('\t');
+  const rows = [];
+
+  rows.push(['K',
+    document.getElementById('uc_t_k_in')?.value || '',
+    '=B2-273.15',
+    document.getElementById('uc_t_from_c_k_in')?.value || '',
+    '=D2+273.15'
+  ]);
+  rows.push(['F',
+    document.getElementById('uc_t_f_in')?.value || '',
+    '=(B3-32)*5/9',
+    document.getElementById('uc_t_from_c_f_in')?.value || '',
+    '=D3*9/5+32'
+  ]);
+  rows.push(['R',
+    document.getElementById('uc_t_r_in')?.value || '',
+    '=(B4-491.67)*5/9',
+    document.getElementById('uc_t_from_c_r_in')?.value || '',
+    '=(D4+273.15)*9/5'
+  ]);
+
+  const body = rows.map(r => r.join('\t')).join('\n');
+  return header + '\n' + body;
+}
+
 // --- Clipboard common ---
 function copyTsvToClipboard(tsv, label) {
   if (navigator.clipboard && navigator.clipboard.writeText) {
@@ -444,12 +638,41 @@ function copyTsvToClipboard(tsv, label) {
       .then(() => {
         if (label) alert(label + ' In Excel, select cell A1 and paste.');
       })
-      .catch(() => alert('Failed to copy to clipboard.'));
+      .catch(() => {
+        // fallback if Clipboard API is blocked
+        const textarea = document.createElement('textarea');
+        textarea.value = tsv;
+        textarea.style.position = 'fixed';
+        textarea.style.left = '-9999px';
+        document.body.appendChild(textarea);
+        textarea.focus();
+        textarea.select();
+        try {
+          document.execCommand('copy');
+          if (label) alert(label + ' In Excel, select cell A1 and paste.');
+        } catch (e) {
+          alert('Failed to copy to clipboard.');
+        }
+        document.body.removeChild(textarea);
+      });
   } else {
-    alert('This browser does not support the Clipboard API.');
+    // legacy fallback
+    const textarea = document.createElement('textarea');
+    textarea.value = tsv;
+    textarea.style.position = 'fixed';
+    textarea.style.left = '-9999px';
+    document.body.appendChild(textarea);
+    textarea.focus();
+    textarea.select();
+    try {
+      document.execCommand('copy');
+      if (label) alert(label + ' In Excel, select cell A1 and paste.');
+    } catch (e) {
+      alert('Failed to copy to clipboard. You can still manually copy from this prompt.\n\n' + tsv);
+    }
+    document.body.removeChild(textarea);
   }
 }
-
 // --- TSV generators ---
 function getBlock1Tsv() {
   const mass = document.getElementById('mass1').value || '';
@@ -840,6 +1063,82 @@ function calcHeatDuty() {
   if (aSpan) aSpan.textContent = Number.isFinite(A) ? A.toFixed(3) : '-';
 }
 
+
+// --- Heat Exchanger Q <-> W (Gcal/h, kg/h, kcal/kg°C) ---
+function calcHxQ2W() {
+  const Qg = parseFloat(document.getElementById('hx_q_q2w')?.value);
+  const Cin = parseFloat(document.getElementById('hx_cin_q2w')?.value);
+  const Cout = parseFloat(document.getElementById('hx_cout_q2w')?.value);
+  const Tin = parseFloat(document.getElementById('hx_tin_q2w')?.value);
+  const Tout = parseFloat(document.getElementById('hx_tout_q2w')?.value);
+  const out = document.getElementById('hx_w_q2w');
+  if (!out || ![Qg,Cin,Cout,Tin,Tout].every(Number.isFinite)) {
+    if (out) out.textContent = '-';
+    return;
+  }
+  const Cp_avg = (Cin + Cout) / 2.0;
+  const dT = Tin - Tout;
+  if (Cp_avg === 0 || dT === 0) {
+    out.textContent = '-';
+    return;
+  }
+  const W = Qg * 1e6 / (Cp_avg * dT);
+  out.textContent = W.toFixed(3);
+}
+
+function calcHxW2Q() {
+  const W = parseFloat(document.getElementById('hx_w_w2q')?.value);
+  const Cin = parseFloat(document.getElementById('hx_cin_w2q')?.value);
+  const Cout = parseFloat(document.getElementById('hx_cout_w2q')?.value);
+  const Tin = parseFloat(document.getElementById('hx_tin_w2q')?.value);
+  const Tout = parseFloat(document.getElementById('hx_tout_w2q')?.value);
+  const out = document.getElementById('hx_q_w2q');
+  if (!out || ![W,Cin,Cout,Tin,Tout].every(Number.isFinite)) {
+    if (out) out.textContent = '-';
+    return;
+  }
+  const Cp_avg = (Cin + Cout) / 2.0;
+  const dT = Tin - Tout;
+  if (Cp_avg === 0) {
+    out.textContent = '-';
+    return;
+  }
+  const Qg = W * Cp_avg * dT / 1e6;
+  out.textContent = Qg.toFixed(3);
+}
+
+function getHxQ2WTsv() {
+  const header = [
+    'Q (Gcal/h)','Cp_in (kcal/kgC)','Cp_out (kcal/kgC)',
+    'Tin (C)','Tout (C)','W (kg/h)'
+  ].join('\t');
+  const row = [
+    document.getElementById('hx_q_q2w')?.value || '',
+    document.getElementById('hx_cin_q2w')?.value || '',
+    document.getElementById('hx_cout_q2w')?.value || '',
+    document.getElementById('hx_tin_q2w')?.value || '',
+    document.getElementById('hx_tout_q2w')?.value || '',
+    '=A2*10^6/(((B2+C2)/2)*(D2-E2))'
+  ].join('\t');
+  return header + '\n' + row;
+}
+
+function getHxW2QTsv() {
+  const header = [
+    'W (kg/h)','Cp_in (kcal/kgC)','Cp_out (kcal/kgC)',
+    'Tin (C)','Tout (C)','Q (Gcal/h)'
+  ].join('\t');
+  const row = [
+    document.getElementById('hx_w_w2q')?.value || '',
+    document.getElementById('hx_cin_w2q')?.value || '',
+    document.getElementById('hx_cout_w2q')?.value || '',
+    document.getElementById('hx_tin_w2q')?.value || '',
+    document.getElementById('hx_tout_w2q')?.value || '',
+    '=A2*((B2+C2)/2)*(D2-E2)/10^6'
+  ].join('\t');
+  return header + '\n' + row;
+}
+
 // --- Steam Duty ---
 function calcSteamDuty() {
   const Q = parseFloat(document.getElementById('sd_q')?.value);
@@ -1007,8 +1306,8 @@ function getCvInvertTsv() {
     document.getElementById('cv_dp_in')?.value || '',
     document.getElementById('cv_sg')?.value || '',
     document.getElementById('cv_cv')?.value || '',
-    '', // will be calculated in JS
-    ''  // will be calculated in JS
+    '=IF(AND(B2>0,C2>0,D2>0),D2*SQRT((B2/0.07030697)/C2)/4.402867,"")',
+    '=IF(AND(A2>0,C2>0,D2>0),((A2*4.402867/D2)^2*C2*0.07030697),"")'
   ].join('\t');
   return header + '\n' + row;
 }
@@ -1020,8 +1319,8 @@ function getOrificeTsv() {
     document.getElementById('ro_d')?.value || '',
     document.getElementById('ro_c')?.value || '',
     document.getElementById('ro_rho')?.value || '',
-    '', // JS calc
-    ''
+    '=IF(AND(A2>0,B2>0,C2>0,D2>0),C2*(PI()*(B2/1000)^2/4)*SQRT(2*A2*98066.5/D2)*3600,"")',
+    '=IF(AND(A2>0,B2>0,C2>0,D2>0),C2*SQRT(2*A2*98066.5/D2),"")'
   ].join('\t');
   return header + '\n' + row;
 }
@@ -1116,8 +1415,11 @@ function getLS3Tsv() {
 }
 
 // --- Init / events ---
-window.addEventListener('DOMContentLoaded', function () {
-  const categorySelect = document.getElementById('category-select');
+
+// --- Init / events (refactored) ---
+window.addEventListener('DOMContentLoaded', () => {
+  // ===== 1) Category/section/index visibility =====
+  const categorySelect = $('category-select');
 
   const sections = {
     'section-mass-volume': document.getElementById('section-mass-volume'),
@@ -1133,237 +1435,227 @@ window.addEventListener('DOMContentLoaded', function () {
     'section-steam-duty': document.getElementById('section-steam-duty'),
     'section-cv-invert': document.getElementById('section-cv-invert'),
     'section-orifice': document.getElementById('section-orifice'),
-    'section-mixing-temp': document.getElementById('section-mixing-temp')
+    'section-mixing-temp': document.getElementById('section-mixing-temp'),
+    'section-uc-pressure': document.getElementById('section-uc-pressure'),
+    'section-uc-temperature': document.getElementById('section-uc-temperature')
   };
 
   const indexes = {
-    'vessel': document.getElementById('index-vessel'),
-    'pump': document.getElementById('index-pump'),
+    vessel: document.getElementById('index-vessel'),
+    pump: document.getElementById('index-pump'),
     'heat-exchanger': document.getElementById('index-heat-exchanger'),
-    'instrumentation': document.getElementById('index-instrumentation'),
+    instrumentation: document.getElementById('index-instrumentation'),
     'line-sizing': document.getElementById('index-line-sizing'),
-    'physical-properties': document.getElementById('index-physical-properties')
+    'physical-properties': document.getElementById('index-physical-properties'),
+    'unit-conversion': document.getElementById('index-unit-conversion')
   };
 
   const CATEGORY_SECTIONS = {
-    'vessel': ['section-vessel-volume', 'section-residence'],
-    'pump': ['section-static-head', 'section-npsh', 'section-pump-power'],
+    vessel: ['section-vessel-volume', 'section-residence'],
+    pump: ['section-static-head', 'section-npsh', 'section-pump-power'],
     'heat-exchanger': ['section-heat-duty', 'section-steam-duty'],
-    'instrumentation': ['section-cv-invert', 'section-orifice'],
+    instrumentation: ['section-cv-invert', 'section-orifice'],
     'line-sizing': ['section-line-sizing'],
-    'physical-properties': ['section-mass-volume', 'section-combined-gas', 'section-gas-density', 'section-mixing-temp']
+    'physical-properties': [
+      'section-mass-volume',
+      'section-combined-gas',
+      'section-gas-density',
+      'section-mixing-temp'
+    ],
+    'unit-conversion': [
+      'section-uc-pressure',
+      'section-uc-temperature'
+    ]
   };
 
-  function applyCategory(category) {
-    // hide all sections
-    Object.keys(sections).forEach(function (id) {
-      const sec = sections[id];
+  const applyCategory = (category) => {
+    Object.values(sections).forEach((sec) => {
       if (sec) sec.style.display = 'none';
     });
-    // hide all indexes
-    Object.keys(indexes).forEach(function (key) {
-      const nav = indexes[key];
+    Object.values(indexes).forEach((nav) => {
       if (nav) nav.style.display = 'none';
     });
+
     const list = CATEGORY_SECTIONS[category] || [];
-    list.forEach(function (id) {
+    list.forEach((id) => {
       const sec = sections[id];
       if (sec) sec.style.display = '';
     });
+
     const nav = indexes[category];
     if (nav) nav.style.display = '';
-  }
+  };
 
   if (categorySelect) {
     applyCategory(categorySelect.value);
-    categorySelect.addEventListener('change', function () {
-      applyCategory(this.value);
+    categorySelect.addEventListener('change', (e) => {
+      applyCategory(e.target.value);
     });
   }
 
-// hook up input events
-  const mass1 = document.getElementById('mass1');
-  const mw1 = document.getElementById('mw1');
-  const vol2_in = document.getElementById('vol2_in');
-  const mw2 = document.getElementById('mw2');
-  if (mass1) mass1.addEventListener('input', calcBlock1);
-  if (mw1) mw1.addEventListener('input', calcBlock1);
-  if (vol2_in) vol2_in.addEventListener('input', calcBlock2);
-  if (mw2) mw2.addEventListener('input', calcBlock2);
+  // ===== 2) Input bindings =====
 
-  const p_kgcm2 = document.getElementById('p_kgcm2');
-  const sg1 = document.getElementById('sg1');
-  const head_m_in = document.getElementById('head_m_in');
-  const sg2 = document.getElementById('sg2');
-  if (p_kgcm2) p_kgcm2.addEventListener('input', calcStaticHeadFromPressure);
-  if (sg1) sg1.addEventListener('input', calcStaticHeadFromPressure);
-  if (head_m_in) head_m_in.addEventListener('input', calcPressureFromStaticHead);
-  if (sg2) sg2.addEventListener('input', calcPressureFromStaticHead);
+  // Mass/volume
+  bindInputs(['mass1', 'mw1'], calcBlock1);
+  bindInputs(['vol2_in', 'mw2'], calcBlock2);
 
+  // Static head
+  bindInputs(['p_kgcm2', 'sg1'], calcStaticHeadFromPressure);
+  bindInputs(['head_m_in', 'sg2'], calcPressureFromStaticHead);
+
+  // Vertical vessel
   const v_head_type = document.getElementById('v_head_type');
-  const v_diam = document.getElementById('v_diam');
-  const v_length = document.getElementById('v_length');
-  const v_level = document.getElementById('v_level');
   if (v_head_type) v_head_type.addEventListener('change', calcVerticalVessel);
-  if (v_diam) v_diam.addEventListener('input', calcVerticalVessel);
-  if (v_length) v_length.addEventListener('input', calcVerticalVessel);
-  if (v_level) v_level.addEventListener('input', calcVerticalVessel);
+  bindInputs(['v_diam', 'v_length', 'v_level'], calcVerticalVessel);
 
+  // Horizontal vessel
   const h_head_type = document.getElementById('h_head_type');
-  const h_diam = document.getElementById('h_diam');
-  const h_length = document.getElementById('h_length');
-  const h_level = document.getElementById('h_level');
   if (h_head_type) h_head_type.addEventListener('change', calcHorizontalVessel);
-  if (h_diam) h_diam.addEventListener('input', calcHorizontalVessel);
-  if (h_length) h_length.addEventListener('input', calcHorizontalVessel);
-  if (h_level) h_level.addEventListener('input', calcHorizontalVessel);
+  bindInputs(['h_diam', 'h_length', 'h_level'], calcHorizontalVessel);
 
-  // Gas Density listeners
-  const gd_mw = document.getElementById('gd_mw');
-  const gd_z  = document.getElementById('gd_z');
-  const gd_p  = document.getElementById('gd_p');
-  const gd_t  = document.getElementById('gd_t');
-  if (gd_mw) gd_mw.addEventListener('input', calcGasDensity);
-  if (gd_z)  gd_z.addEventListener('input', calcGasDensity);
-  if (gd_p)  gd_p.addEventListener('input', calcGasDensity);
-  if (gd_t)  gd_t.addEventListener('input', calcGasDensity);
+  // Gas density
+  bindInputs(['gd_mw', 'gd_z', 'gd_p', 'gd_t'], calcGasDensity);
 
-  // Line sizing listeners
-  const ls1_ids = ['ls1_mass','ls1_rho','ls1_mu','ls1_p','ls1_t','ls1_d','ls1_eps'];
-  ls1_ids.forEach(id=>{ const el=document.getElementById(id); if(el) el.addEventListener('input', calcLS1); });
-  const ls2_ids = ['ls2_q','ls2_rho','ls2_mu','ls2_p','ls2_t','ls2_d','ls2_eps'];
-  ls2_ids.forEach(id=>{ const el=document.getElementById(id); if(el) el.addEventListener('input', calcLS2); });
-  const ls3_ids = ['ls3_mass','ls3_mw','ls3_mu','ls3_z','ls3_k','ls3_side','ls3_pknown','ls3_t','ls3_d','ls3_eps','ls3_leq'];
-  ls3_ids.forEach(id=>{ const el=document.getElementById(id); if(el) el.addEventListener('input', calcLS3); });
+  // Line sizing – liquids
+  bindInputs(
+    ['ls1_mass', 'ls1_rho', 'ls1_mu', 'ls1_p', 'ls1_t', 'ls1_d', 'ls1_eps'],
+    calcLS1
+  );
+  bindInputs(
+    ['ls2_q', 'ls2_rho', 'ls2_mu', 'ls2_p', 'ls2_t', 'ls2_d', 'ls2_eps'],
+    calcLS2
+  );
 
-  // Residence time listeners
-  const res_vol = document.getElementById('res_vol');
-  const res_q = document.getElementById('res_q');
-  if (res_vol) res_vol.addEventListener('input', calcResidence);
-  if (res_q) res_q.addEventListener('input', calcResidence);
+  // Line sizing – vapor
+  bindInputs(
+    [
+      'ls3_mass',
+      'ls3_mw',
+      'ls3_mu',
+      'ls3_z',
+      'ls3_k',
+      'ls3_side',
+      'ls3_pknown',
+      'ls3_t',
+      'ls3_d',
+      'ls3_eps',
+      'ls3_leq'
+    ],
+    calcLS3
+  );
 
-  // NPSH listeners
-  ['npsh_ps','npsh_hs','npsh_hf','npsh_sg','npsh_pv'].forEach(id=>{
-    const el = document.getElementById(id);
-    if (el) el.addEventListener('input', calcNPSH);
-  });
+  // Residence time
+  bindInputs(['res_vol', 'res_q'], calcResidence);
 
-  // Pump power listeners
-  ['hp_q','hp_dp','hp_eff'].forEach(id=>{
-    const el = document.getElementById(id);
-    if (el) el.addEventListener('input', calcPumpPower);
-  });
+  // NPSH
+  bindInputs(['npsh_ps', 'npsh_hs', 'npsh_hf', 'npsh_sg', 'npsh_pv'], calcNPSH);
 
-  // Heat duty listeners
-  ['hd_m','hd_cp','hd_tin','hd_tout','hd_u','hd_lmtd'].forEach(id=>{
-    const el = document.getElementById(id);
-    if (el) el.addEventListener('input', calcHeatDuty);
-  });
+  // Pump power
+  bindInputs(['hp_q', 'hp_dp', 'hp_eff'], calcPumpPower);
 
-  // Steam duty listeners
-  ['sd_q','sd_lambda'].forEach(id=>{
-    const el = document.getElementById(id);
-    if (el) el.addEventListener('input', calcSteamDuty);
-  });
+  // Heat duty / area
+  bindInputs(
+    ['hd_m', 'hd_cp', 'hd_tin', 'hd_tout', 'hd_u', 'hd_lmtd'],
+    calcHeatDuty
+  );
 
-  // Cv inversion listeners
-  ['cv_q_in','cv_dp_in','cv_sg','cv_cv'].forEach(id=>{
-    const el = document.getElementById(id);
-    if (el) el.addEventListener('input', calcCvInvert);
-  });
+  // HX: Q → W
+  bindInputs(
+    ['hx_q_q2w', 'hx_cin_q2w', 'hx_cout_q2w', 'hx_tin_q2w', 'hx_tout_q2w'],
+    calcHxQ2W
+  );
+  // HX: W → Q
+  bindInputs(
+    ['hx_w_w2q', 'hx_cin_w2q', 'hx_cout_w2q', 'hx_tin_w2q', 'hx_tout_w2q'],
+    calcHxW2Q
+  );
 
-  // Orifice listeners
-  ['ro_dp','ro_d','ro_c','ro_rho'].forEach(id=>{
-    const el = document.getElementById(id);
-    if (el) el.addEventListener('input', calcOrifice);
-  });
+  // Steam duty
+  bindInputs(['sd_q', 'sd_lambda'], calcSteamDuty);
 
-  // Mixing temperature listeners
-  ['mix_m1','mix_cp1','mix_t1','mix_m2','mix_cp2','mix_t2'].forEach(id=>{
-    const el = document.getElementById(id);
-    if (el) el.addEventListener('input', calcMixing);
-  });
+  // Cv inversion
+  bindInputs(['cv_q_in', 'cv_dp_in', 'cv_sg', 'cv_cv'], calcCvInvert);
 
+  // Orifice
+  bindInputs(['ro_dp', 'ro_d', 'ro_c', 'ro_rho'], calcOrifice);
 
-  // Combined Gas Law listeners
-  const atm_v2 = document.getElementById('atm_v2');
-  const p1_v2 = document.getElementById('p1_v2');
-  const t1_v2 = document.getElementById('t1_v2');
-  const v1_v2 = document.getElementById('v1_v2');
-  const p2_v2 = document.getElementById('p2_v2');
-  const t2_v2 = document.getElementById('t2_v2');
-  if (atm_v2) atm_v2.addEventListener('input', calcCombinedV2);
-  if (p1_v2) p1_v2.addEventListener('input', calcCombinedV2);
-  if (t1_v2) t1_v2.addEventListener('input', calcCombinedV2);
-  if (v1_v2) v1_v2.addEventListener('input', calcCombinedV2);
-  if (p2_v2) p2_v2.addEventListener('input', calcCombinedV2);
-  if (t2_v2) t2_v2.addEventListener('input', calcCombinedV2);
+  // Mixing temperature
+  bindInputs(
+    ['mix_m1', 'mix_cp1', 'mix_t1', 'mix_m2', 'mix_cp2', 'mix_t2'],
+    calcMixing
+  );
 
-  const atm_p2 = document.getElementById('atm_p2');
-  const p1_p2 = document.getElementById('p1_p2');
-  const t1_p2 = document.getElementById('t1_p2');
-  const v1_p2 = document.getElementById('v1_p2');
-  const t2_p2 = document.getElementById('t2_p2');
-  const v2_p2 = document.getElementById('v2_p2');
-  if (atm_p2) atm_p2.addEventListener('input', calcCombinedP2);
-  if (p1_p2) p1_p2.addEventListener('input', calcCombinedP2);
-  if (t1_p2) t1_p2.addEventListener('input', calcCombinedP2);
-  if (v1_p2) v1_p2.addEventListener('input', calcCombinedP2);
-  if (t2_p2) t2_p2.addEventListener('input', calcCombinedP2);
-  if (v2_p2) v2_p2.addEventListener('input', calcCombinedP2);
+  // Unit Conversion
+  bindInputs(
+    ['uc_p_kgcm2a_in','uc_p_bar_in','uc_p_atm_in','uc_p_mmh2o_in','uc_p_mmhg_in','uc_p_kpa_in','uc_p_psi_in',
+     'uc_p_from_g_kgcm2a_in','uc_p_from_g_bar_in','uc_p_from_g_atm_in','uc_p_from_g_mmh2o_in','uc_p_from_g_mmhg_in','uc_p_from_g_kpa_in','uc_p_from_g_psi_in'],
+    calcUcPressure
+  );
+  bindInputs(
+    ['uc_t_k_in','uc_t_f_in','uc_t_r_in','uc_t_from_c_k_in','uc_t_from_c_f_in','uc_t_from_c_r_in'],
+    calcUcTemp
+  );
 
-  const atm_t2 = document.getElementById('atm_t2');
-  const p1_t2 = document.getElementById('p1_t2');
-  const t1_t2 = document.getElementById('t1_t2');
-  const v1_t2 = document.getElementById('v1_t2');
-  const p2_t2 = document.getElementById('p2_t2');
-  const v2_t2 = document.getElementById('v2_t2');
-  if (atm_t2) atm_t2.addEventListener('input', calcCombinedT2);
-  if (p1_t2) p1_t2.addEventListener('input', calcCombinedT2);
-  if (t1_t2) t1_t2.addEventListener('input', calcCombinedT2);
-  if (v1_t2) v1_t2.addEventListener('input', calcCombinedT2);
-  if (p2_t2) p2_t2.addEventListener('input', calcCombinedT2);
-  if (v2_t2) v2_t2.addEventListener('input', calcCombinedT2);
+  // Combined gas law
+  bindInputs(['atm_v2', 'p1_v2', 't1_v2', 'v1_v2', 'p2_v2', 't2_v2'], calcCombinedV2);
+  bindInputs(['atm_p2', 'p1_p2', 't1_p2', 'v1_p2', 't2_p2', 'v2_p2'], calcCombinedP2);
+  bindInputs(['atm_t2', 'p1_t2', 't1_t2', 'v1_t2', 'p2_t2', 'v2_t2'], calcCombinedT2);
 
-  // copy buttons
-  const copyButtons = document.querySelectorAll('.btn-copy');
-  copyButtons.forEach(btn => {
-    btn.addEventListener('click', function () {
-      const block = this.getAttribute('data-block');
-      let tsv = null;
-      if (block === '1') tsv = getBlock1Tsv();
-      else if (block === '2') tsv = getBlock2Tsv();
-      else if (block === '3') tsv = getBlock3Tsv();
-      else if (block === '4') tsv = getBlock4Tsv();
-      else if (block === '5') tsv = getBlock5Tsv();
-      else if (block === '6') tsv = getBlock6Tsv();
-      else if (block === '7') tsv = getBlock7Tsv();
-      else if (block === '8') tsv = getBlock8Tsv();
-      else if (block === '9') tsv = getBlock9Tsv();
-      else if (block === '10') tsv = getBlock10Tsv();
-      else if (block === 'residence') tsv = getResidenceTsv();
-      else if (block === 'npsh') tsv = getNPSHTsv();
-      else if (block === 'pump-power') tsv = getPumpPowerTsv();
-      else if (block === 'heat-duty') tsv = getHeatDutyTsv();
-      else if (block === 'steam-duty') tsv = getSteamDutyTsv();
-      else if (block === 'cv-invert') tsv = getCvInvertTsv();
-      else if (block === 'orifice') tsv = getOrificeTsv();
-      else if (block === 'mixing-temp') tsv = getMixingTsv();
-      else if (block === 'ls1') tsv = getLS1Tsv();
-      else if (block === 'ls2') tsv = getLS2Tsv();
-      else if (block === 'ls3') tsv = getLS3Tsv();
-      if (tsv) copyTsvToClipboard(tsv, 'Current block table has been copied.');
+  // ===== 3) Copy-to-Excel buttons (TSV mapping) =====
+  const TSV_GENERATORS = {
+    '1': getBlock1Tsv,
+    '2': getBlock2Tsv,
+    '3': getBlock3Tsv,
+    '4': getBlock4Tsv,
+    '5': getBlock5Tsv,
+    '6': getBlock6Tsv,
+    '7': getBlock7Tsv,
+    '8': getBlock8Tsv,
+    '9': getBlock9Tsv,
+    '10': getBlock10Tsv,
+    residence: getResidenceTsv,
+    npsh: getNPSHTsv,
+    'pump-power': getPumpPowerTsv,
+    'heat-duty': getHeatDutyTsv,
+    'hx-q2w': getHxQ2WTsv,
+    'hx-w2q': getHxW2QTsv,
+    'steam-duty': getSteamDutyTsv,
+    'cv-invert': getCvInvertTsv,
+    orifice: getOrificeTsv,
+    'mixing-temp': getMixingTsv,
+    ls1: getLS1Tsv,
+    ls2: getLS2Tsv,
+    ls3: getLS3Tsv,
+    'uc-pressure': getUcPressureTsv,
+    'uc-temp': getUcTempTsv
+  };
+
+  document.querySelectorAll('.btn-copy').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const key = btn.getAttribute('data-block');
+      const generator = TSV_GENERATORS[key];
+      if (!generator) return;
+
+      const tsv = generator();
+      if (!tsv) return;
+
+      copyTsvToClipboard(
+        tsv,
+        'Current block table has been copied.'
+      );
     });
   });
 
+  // ===== 4) Initial one-time calculations =====
+  if (document.getElementById('mass1')) calcBlock1();
+  if (document.getElementById('vol2_in')) calcBlock2();
 
-  // initial one-time calculations
-  if (mass1 && mw1) calcBlock1();
-  if (vol2_in && mw2) calcBlock2();
-  if (p_kgcm2 && sg1) calcStaticHeadFromPressure();
-  if (head_m_in && sg2) calcPressureFromStaticHead();
-  if (v_head_type && v_diam && document.getElementById('v_length') && v_level) calcVerticalVessel();
-  if (h_head_type && h_diam && h_length && h_level) calcHorizontalVessel();
+  if (document.getElementById('p_kgcm2')) calcStaticHeadFromPressure();
+  if (document.getElementById('head_m_in')) calcPressureFromStaticHead();
+
+  if (document.getElementById('v_diam')) calcVerticalVessel();
+  if (document.getElementById('h_diam')) calcHorizontalVessel();
+
   if (document.getElementById('ls1_mass')) calcLS1();
   if (document.getElementById('ls2_q')) calcLS2();
   if (document.getElementById('ls3_mass')) calcLS3();
@@ -1372,16 +1664,19 @@ window.addEventListener('DOMContentLoaded', function () {
   if (document.getElementById('npsh_ps')) calcNPSH();
   if (document.getElementById('hp_q')) calcPumpPower();
   if (document.getElementById('hd_m')) calcHeatDuty();
+  if (document.getElementById('hx_q_q2w')) calcHxQ2W();
+  if (document.getElementById('hx_w_w2q')) calcHxW2Q();
   if (document.getElementById('sd_q')) calcSteamDuty();
   if (document.getElementById('cv_q_in')) calcCvInvert();
   if (document.getElementById('ro_dp')) calcOrifice();
   if (document.getElementById('mix_m1')) calcMixing();
 
-  // Combined Gas initial
+  if (document.getElementById('uc_p_kgcm2a_in')) calcUcPressure();
+  if (document.getElementById('uc_t_k_in')) calcUcTemp();
+
   if (document.getElementById('atm_v2')) calcCombinedV2();
   if (document.getElementById('atm_p2')) calcCombinedP2();
   if (document.getElementById('atm_t2')) calcCombinedT2();
 
-  // Gas Density initial
   if (document.getElementById('gd_mw')) calcGasDensity();
 });
